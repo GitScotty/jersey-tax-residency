@@ -362,9 +362,12 @@
             };
 
             function handleAnswer(key, value) {
+                console.log('handleAnswer called with:', key, value);
                 state.answers[key] = value;
+                console.log('Current state:', state);
 
                 if (key === 'days' && value === 'under60') {
+                    console.log('Matched: days under60');
                     state.result = {
                         status: 'Non-Resident (Short-term Business Visitor)',
                         description: 'You are considered a short-term business visitor and non-resident.',
@@ -372,7 +375,9 @@
                         type: 'non-resident'
                     };
                     state.step = 'result';
+                    console.log('About to render result...');
                     render();
+                    console.log('Render complete');
                     return;
                 }
 
