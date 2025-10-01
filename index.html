@@ -366,8 +366,9 @@
                 state.answers[key] = value;
                 console.log('Current state:', state);
 
-                if (key === 'days' && value === 'under60') {
-                    console.log('Matched: days under60');
+                // Initial question is about days
+                if (key === 'initial' && value === 'under60') {
+                    console.log('Matched: initial under60');
                     state.result = {
                         status: 'Non-Resident (Short-term Business Visitor)',
                         description: 'You are considered a short-term business visitor and non-resident.',
@@ -381,7 +382,7 @@
                     return;
                 }
 
-                if (key === 'days' && value === 'over60') {
+                if (key === 'initial' && value === 'over60') {
                     state.step = 'moving';
                     render();
                     return;
