@@ -319,24 +319,39 @@
                     ]
                 },
                 moving: {
-                    title: 'Are you planning to live in Jersey?',
-                    subtitle: 'This means buying or renting a home in Jersey.',
+                    title: 'Are you moving to Jersey to live and work?',
+                    subtitle: 'This means relocating to Jersey for employment or residence.',
                     options: [
-                        { value: 'yes', title: 'Yes - Moving to Jersey', subtitle: 'Relocating my life to the Island' },
-                        { value: 'no', title: 'No - Living abroad but visiting or commuting for work', subtitle: 'Maintaining my main home elsewhere' }
+                        { value: 'yes', title: 'Yes - Moving to Jersey', subtitle: 'Relocating to the Island for work or residence' },
+                        { value: 'no', title: 'No - Living abroad but visiting', subtitle: 'Maintaining my main home elsewhere' }
                     ]
                 },
-                duration: {
-                    title: 'How long do you plan to live in Jersey, and will you be settling in Jersey as your main centre of life?',
-                    subtitle: 'Consider your employment/retirement intentions and whether your move is open-ended or has an expected end date.',
+                centreOfLife: {
+                    title: 'Will you be maintaining your main home and centre of life outside of Jersey?',
+                    subtitle: 'This means keeping your primary residence, main assets, and personal affairs in another country.',
+                    options: [
+                        { value: 'yes', title: 'Yes - Maintaining centre of life elsewhere', subtitle: 'Keeping my main home and affairs outside Jersey' },
+                        { value: 'no', title: 'No - Making Jersey my main home', subtitle: 'Transferring my life and affairs to Jersey' }
+                    ]
+                },
+                durationSettling: {
+                    title: 'How long do you plan to live in Jersey?',
+                    subtitle: 'You are making Jersey your main home.',
                     options: [
                         { value: 'indefinite', title: 'Settling permanently (indefinite)', subtitle: 'Making Jersey my main home with no end date' },
-                        { value: 'over4years', title: 'More than 4 years', subtitle: 'I foresee living here for over 4 years' },
-                        { value: 'under4years', title: '4 years or fewer', subtitle: 'Temporary stay while maintaining life elsewhere' }
+                        { value: 'over4years', title: 'More than 4 years', subtitle: 'I foresee living here for over 4 years' }
+                    ]
+                },
+                durationMaintaining: {
+                    title: 'How long do you plan to live in Jersey?',
+                    subtitle: 'You are maintaining your centre of life outside Jersey.',
+                    options: [
+                        { value: 'under4years', title: '4 years or fewer', subtitle: 'Temporary stay with a defined end date within 4 years' },
+                        { value: 'over4years', title: 'More than 4 years', subtitle: 'I foresee living here for over 4 years' }
                     ]
                 },
                 contract: {
-                    title: 'If you are taking up a job in Jersey, is your employment contract a fixed-term for 4 years or fewer?',
+                    title: 'Is your employment contract fixed-term for 4 years or fewer?',
                     subtitle: 'This applies if you\'re maintaining your centre of life in a different country.',
                     options: [
                         { value: 'fixed', title: 'Yes - Fixed term ≤ 4 years', subtitle: 'Defined contract end date within 4 years' },
