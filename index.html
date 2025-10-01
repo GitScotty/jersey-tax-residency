@@ -334,14 +334,6 @@
                         { value: 'no', title: 'No - Making Jersey my only home', subtitle: 'Maintaining no other home and transferring my affairs to Jersey' }
                     ]
                 },
-                durationSettling: {
-                    title: 'How long do you plan to live in Jersey?',
-                    subtitle: 'You are making Jersey your main home.',
-                    options: [
-                        { value: 'indefinite', title: 'Settling permanently (indefinite)', subtitle: 'Making Jersey my main home with no foreseen end date' },
-                        { value: 'over4years', title: 'More than 4 years', subtitle: 'I foresee living here for over 4 years' }
-                    ]
-                },
                 durationMaintaining: {
                     title: 'How long do you plan to live in Jersey?',
                     subtitle: 'While you maintain a life outside Jersey.',
@@ -419,37 +411,19 @@
                 }
 
                 if (key === 'centreOfLife' && value === 'no') {
-                    state.step = 'durationSettling';
+                    state.result = {
+                    status: 'Resident and Ordinarily Resident',
+                    description: 'You are resident and ordinarily resident from day one as you are moving to Jersey and not maintaining a presence in any other country.',
+                    taxLiability: 'Liable to Jersey income tax on your world-wide income regardless of where it arises. If you pay tax on the same income in another jurisdiction, a credit may be available for foreign taxes paid. Tax allowances will be apportioned based on your arrival date if part way through the year.',
+                    type: 'resident-ordinarily'
+                    };
+                    state.step = 'result';
                     render();
                     return;
                 }
 
                 if (key === 'centreOfLife' && value === 'yes') {
                     state.step = 'durationMaintaining';
-                    render();
-                    return;
-                }
-
-                if (key === 'durationSettling' && value === 'indefinite') {
-                    state.result = {
-                        status: 'Resident and Ordinarily Resident',
-                        description: 'You are resident and ordinarily resident from day one as you are settling permanently in Jersey.',
-                        taxLiability: 'Liable to Jersey income tax on your world-wide income regardless of where it arises. If you pay tax on the same income in another jurisdiction, a credit may be available for foreign taxes paid. Tax allowances will be apportioned based on your arrival date if part way through the year.',
-                        type: 'resident-ordinarily'
-                    };
-                    state.step = 'result';
-                    render();
-                    return;
-                }
-
-                if (key === 'durationSettling' && value === 'over4years') {
-                    state.result = {
-                        status: 'Resident and Ordinarily Resident',
-                        description: 'You are resident and ordinarily resident from day one as you foresee living in Jersey for more than four years.',
-                        taxLiability: 'Liable to Jersey income tax on your world-wide income regardless of where it arises. If you pay tax on the same income in another jurisdiction, a credit may be available for foreign taxes paid. Tax allowances will be apportioned based on your arrival date if part way through the year.',
-                        type: 'resident-ordinarily'
-                    };
-                    state.step = 'result';
                     render();
                     return;
                 }
