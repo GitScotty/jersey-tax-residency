@@ -404,8 +404,11 @@
                 }
 
                 if (key === 'moving' && value === 'yes') {
-                    state.step = 'duration';
+                    console.log('Matched: moving yes');
+                    state.step = 'centreOfLife';
+                    console.log('Changed step to:', state.step);
                     render();
+                    console.log('Render complete');
                     return;
                 }
 
@@ -415,7 +418,19 @@
                     return;
                 }
 
-                if (key === 'duration' && value === 'indefinite') {
+                if (key === 'centreOfLife' && value === 'no') {
+                    state.step = 'durationSettling';
+                    render();
+                    return;
+                }
+
+                if (key === 'centreOfLife' && value === 'yes') {
+                    state.step = 'durationMaintaining';
+                    render();
+                    return;
+                }
+
+                if (key === 'durationSettling' && value === 'indefinite') {
                     state.result = {
                         status: 'Resident and Ordinarily Resident',
                         description: 'You are resident and ordinarily resident from day 1 as you are settling permanently in Jersey.',
@@ -427,7 +442,7 @@
                     return;
                 }
 
-                if (key === 'duration' && value === 'over4years') {
+                if (key === 'durationSettling' && value === 'over4years') {
                     state.result = {
                         status: 'Resident and Ordinarily Resident',
                         description: 'You are resident and ordinarily resident from day 1 as you foresee living in Jersey for more than four years.',
@@ -439,8 +454,20 @@
                     return;
                 }
 
-                if (key === 'duration' && value === 'under4years') {
+                if (key === 'durationMaintaining' && value === 'under4years') {
                     state.step = 'contract';
+                    render();
+                    return;
+                }
+
+                if (key === 'durationMaintaining' && value === 'over4years') {
+                    state.result = {
+                        status: 'Resident and Ordinarily Resident',
+                        description: 'You are resident and ordinarily resident from day 1 as you foresee living in Jersey for more than four years.',
+                        taxLiability: 'Liable to Jersey income tax on your world-wide income regardless of where it arises. If you pay tax on the same income in another jurisdiction, a credit may be available for foreign taxes paid. Tax allowances will be apportioned based on your arrival date if part way through the year.',
+                        type: 'resident-ordinarily'
+                    };
+                    state.step = 'result';
                     render();
                     return;
                 }
