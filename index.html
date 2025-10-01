@@ -4,333 +4,565 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jersey Tax Residency Assessment</title>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: white;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: #C8102E;
+            color: white;
+            padding: 1rem 0;
+        }
+        
+        .header-content {
+            max-width: 64rem;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .breadcrumb {
+            background: #f3f4f6;
+            border-bottom: 1px solid #d1d5db;
+            padding: 0.75rem 0;
+        }
+        
+        .breadcrumb-content {
+            max-width: 64rem;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .breadcrumb a {
+            color: #C8102E;
+            text-decoration: none;
+        }
+        
+        .container {
+            max-width: 64rem;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        
+        .intro h2 {
+            font-size: 1.875rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .intro p {
+            font-size: 1.125rem;
+            color: #4b5563;
+            margin-bottom: 2rem;
+        }
+        
+        .card {
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 0.25rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .question-box {
+            background: #f9fafb;
+            padding: 1.25rem;
+            border-radius: 0.25rem;
+            border: 1px solid #d1d5db;
+            margin-bottom: 1.5rem;
+        }
+        
+        .question-box h3 {
+            font-size: 1.125rem;
+            font-weight: bold;
+            margin-bottom: 0.75rem;
+        }
+        
+        .question-box p {
+            font-size: 0.875rem;
+            color: #4b5563;
+        }
+        
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .option-button {
+            background: white;
+            border: 2px solid #d1d5db;
+            padding: 1rem 1.5rem;
+            border-radius: 0.25rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+        }
+        
+        .option-button:hover {
+            border-color: #C8102E;
+            background: #fef2f2;
+        }
+        
+        .option-button-title {
+            font-weight: bold;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .option-button-subtitle {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .result-box {
+            border: 1px solid #93c5fd;
+            padding: 1.5rem;
+            border-radius: 0.25rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .result-box.non-resident {
+            background: #d1fae5;
+            border-color: #6ee7b7;
+        }
+        
+        .result-box.resident-not-ordinarily {
+            background: #fef3c7;
+            border-color: #fcd34d;
+        }
+        
+        .result-box.resident-ordinarily {
+            background: #fee2e2;
+            border-color: #fca5a5;
+        }
+        
+        .result-content h3 {
+            font-size: 1.125rem;
+            font-weight: bold;
+            margin-bottom: 0.75rem;
+        }
+        
+        .result-status {
+            background: white;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            border: 1px solid #d1d5db;
+            margin-bottom: 1rem;
+        }
+        
+        .result-status p {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #C8102E;
+        }
+        
+        .result-details {
+            background: #f9fafb;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            border: 1px solid #d1d5db;
+        }
+        
+        .result-details h4 {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .result-details p {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        
+        .result-details p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .primary-button {
+            width: 100%;
+            background: #C8102E;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.25rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
+        }
+        
+        .primary-button:hover {
+            background: #a00d24;
+        }
+        
+        .info-box {
+            background: #dbeafe;
+            border: 1px solid #93c5fd;
+            padding: 1.5rem;
+            border-radius: 0.25rem;
+        }
+        
+        .info-box h3 {
+            font-size: 1.125rem;
+            font-weight: bold;
+            margin-bottom: 0.75rem;
+        }
+        
+        .info-box ul {
+            list-style: none;
+        }
+        
+        .info-box li {
+            display: flex;
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+        }
+        
+        .bullet {
+            color: #C8102E;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+        
+        .info-box a {
+            color: #C8102E;
+            text-decoration: underline;
+        }
+        
+        .footer {
+            background: #1f2937;
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        .footer-content {
+            max-width: 64rem;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <div id="root"></div>
+    <div class="header">
+        <div class="header-content">
+            <h1>Government of Jersey</h1>
+        </div>
+    </div>
 
-    <script type="text/babel">
-        const { useState } = React;
+    <div class="breadcrumb">
+        <div class="breadcrumb-content">
+            <a href="#">Home</a> &gt; <a href="#">Taxes and money</a> &gt; Tax residency assessment
+        </div>
+    </div>
 
-        function JerseyTaxResidency() {
-            const [step, setStep] = useState('initial');
-            const [answers, setAnswers] = useState({});
-            const [result, setResult] = useState(null);
+    <div class="container">
+        <div class="intro">
+            <h2>Jersey Tax Residency Assessment</h2>
+            <p>Determine your tax residency status for Jersey income tax purposes. Your residency status determines what income you pay tax on and what allowances you receive.</p>
+        </div>
 
-            const handleAnswer = (key, value) => {
-                const newAnswers = { ...answers, [key]: value };
-                setAnswers(newAnswers);
+        <div class="card">
+            <div id="question-container"></div>
+        </div>
+
+        <div class="info-box">
+            <h3>Important Information</h3>
+            <ul>
+                <li><span class="bullet">•</span> This tool provides guidance only. For specific advice, contact Revenue Jersey or a tax professional.</li>
+                <li><span class="bullet">•</span> Double tax agreements with other jurisdictions may affect your tax position.</li>
+                <li><span class="bullet">•</span> Visit <a href="https://www.gov.je/TaxesMoney/IncomeTax/Individuals/IncomeTaxCircumstances/pages/residencyforjerseytax.aspx">gov.je</a> for complete residency information.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-content">
+            <p>&copy; <span id="year"></span> Government of Jersey. All rights reserved.</p>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            var state = {
+                step: 'initial',
+                answers: {},
+                result: null
+            };
+
+            var questions = {
+                initial: {
+                    title: 'How many days will you spend in Jersey per year?',
+                    subtitle: 'This includes all visits throughout the year, including days of arrival and departure.',
+                    options: [
+                        { value: 'under60', title: 'Fewer than 60 days', subtitle: 'Short-term business visitor' },
+                        { value: 'over60', title: '60 days or more', subtitle: 'Continue to determine your status' }
+                    ]
+                },
+                moving: {
+                    title: 'Are you moving to Jersey to live and work?',
+                    subtitle: 'This means relocating your main home, possessions, and financial affairs to Jersey.',
+                    options: [
+                        { value: 'yes', title: 'Yes - Moving to Jersey', subtitle: 'Relocating my life to the Island' },
+                        { value: 'no', title: 'No - Living abroad but visiting', subtitle: 'Maintaining my main home elsewhere' }
+                    ]
+                },
+                duration: {
+                    title: 'How long do you plan to live in Jersey?',
+                    subtitle: 'Consider your employment duration and whether you\'re settling permanently.',
+                    options: [
+                        { value: 'indefinite', title: 'Settling permanently (indefinite)', subtitle: 'Making Jersey my main home with no end date' },
+                        { value: 'over4years', title: 'More than 4 years', subtitle: 'I foresee living here for over 4 years' },
+                        { value: 'under4years', title: '4 years or fewer', subtitle: 'Temporary stay while maintaining life elsewhere' }
+                    ]
+                },
+                contract: {
+                    title: 'Is your employment contract fixed-term for 4 years or fewer?',
+                    subtitle: 'This applies if you\'re maintaining your centre of life in a different country.',
+                    options: [
+                        { value: 'fixed', title: 'Yes - Fixed term ≤ 4 years', subtitle: 'Defined contract end date within 4 years' },
+                        { value: 'notfixed', title: 'No - Open-ended or unclear', subtitle: 'Not a fixed-term contract of 4 years or fewer' }
+                    ]
+                },
+                visitor: {
+                    title: 'Where do you stay when visiting Jersey?',
+                    subtitle: 'Available accommodation means property you own, rent, or lease - not hotels.',
+                    options: [
+                        { value: 'hotel', title: 'Hotels or guest houses only', subtitle: 'No property I own or lease' },
+                        { value: 'owned', title: 'Property I own, rent, or lease', subtitle: 'Available accommodation in my name' }
+                    ]
+                },
+                nights: {
+                    title: 'How many nights per year do you spend in Jersey (on average)?',
+                    subtitle: 'Consider your average over a 4-year period.',
+                    options: [
+                        { value: 'over90', title: 'More than 90 nights per year', subtitle: 'Averaged over 4 years' },
+                        { value: 'under90', title: '90 nights or fewer per year', subtitle: 'Averaged over 4 years' }
+                    ]
+                }
+            };
+
+            function handleAnswer(key, value) {
+                state.answers[key] = value;
 
                 if (key === 'days' && value === 'under60') {
-                    setResult({
+                    state.result = {
                         status: 'Non-Resident (Short-term Business Visitor)',
                         description: 'You are considered a short-term business visitor and non-resident.',
                         taxLiability: 'Your Jersey-sourced income is exempt from income tax. You are not required to register with Revenue Jersey.',
                         type: 'non-resident'
-                    });
-                    setStep('result');
+                    };
+                    state.step = 'result';
+                    render();
                     return;
                 }
 
                 if (key === 'days' && value === 'over60') {
-                    setStep('moving');
+                    state.step = 'moving';
+                    render();
                     return;
                 }
 
                 if (key === 'moving' && value === 'yes') {
-                    setStep('duration');
+                    state.step = 'duration';
+                    render();
                     return;
                 }
 
                 if (key === 'moving' && value === 'no') {
-                    setStep('visitor');
+                    state.step = 'visitor';
+                    render();
                     return;
                 }
 
                 if (key === 'duration' && value === 'indefinite') {
-                    setResult({
+                    state.result = {
                         status: 'Resident and Ordinarily Resident',
                         description: 'You are resident and ordinarily resident from day 1 as you are settling permanently in Jersey.',
                         taxLiability: 'Liable to Jersey income tax on your world-wide income regardless of where it arises. If you pay tax on the same income in another jurisdiction, a credit may be available for foreign taxes paid. Tax allowances will be apportioned based on your arrival date if part way through the year.',
                         type: 'resident-ordinarily'
-                    });
-                    setStep('result');
+                    };
+                    state.step = 'result';
+                    render();
                     return;
                 }
 
                 if (key === 'duration' && value === 'over4years') {
-                    setResult({
+                    state.result = {
                         status: 'Resident and Ordinarily Resident',
                         description: 'You are resident and ordinarily resident from day 1 as you foresee living in Jersey for more than four years.',
                         taxLiability: 'Liable to Jersey income tax on your world-wide income regardless of where it arises. If you pay tax on the same income in another jurisdiction, a credit may be available for foreign taxes paid. Tax allowances will be apportioned based on your arrival date if part way through the year.',
                         type: 'resident-ordinarily'
-                    });
-                    setStep('result');
+                    };
+                    state.step = 'result';
+                    render();
                     return;
                 }
 
                 if (key === 'duration' && value === 'under4years') {
-                    setStep('contract');
+                    state.step = 'contract';
+                    render();
                     return;
                 }
 
                 if (key === 'contract' && value === 'fixed') {
-                    setResult({
+                    state.result = {
                         status: 'Resident but Not Ordinarily Resident',
                         description: 'You are resident but not ordinarily resident during the first four years, as you have a fixed-term contract of four years or fewer while maintaining your centre of life elsewhere.',
                         taxLiability: 'You owe income tax only on Jersey-sourced income and income remitted to Jersey. If your contract extends beyond four years, you become resident and ordinarily resident from the start of year 5 or from the date of contract change.',
                         allowances: 'Allowances are apportioned for each day not spent in Jersey (excluding holidays and business trips).',
                         type: 'resident-not-ordinarily'
-                    });
-                    setStep('result');
+                    };
+                    state.step = 'result';
+                    render();
                     return;
                 }
 
                 if (key === 'contract' && value === 'notfixed') {
-                    setResult({
+                    state.result = {
                         status: 'Resident and Ordinarily Resident',
                         description: 'You are resident and ordinarily resident from day 1.',
                         taxLiability: 'Liable to Jersey income tax on your world-wide income regardless of where it arises. If you pay tax on the same income in another jurisdiction, a credit may be available for foreign taxes paid. Tax allowances will be apportioned based on your arrival date if part way through the year.',
                         type: 'resident-ordinarily'
-                    });
-                    setStep('result');
+                    };
+                    state.step = 'result';
+                    render();
                     return;
                 }
 
                 if (key === 'visitor' && value === 'hotel') {
-                    setResult({
+                    state.result = {
                         status: 'Generally Non-Resident',
                         description: 'If you stay in hotels and do not exceed 60 days, you are generally not considered resident.',
                         taxLiability: 'Limited or no Jersey income tax liability on Jersey-sourced income only.',
                         type: 'non-resident'
-                    });
-                    setStep('result');
+                    };
+                    state.step = 'result';
+                    render();
                     return;
                 }
 
                 if (key === 'visitor' && value === 'owned') {
-                    setStep('nights');
+                    state.step = 'nights';
+                    render();
                     return;
                 }
 
                 if (key === 'nights' && value === 'over90') {
-                    setResult({
+                    state.result = {
                         status: 'Resident and Ordinarily Resident (from Year 5)',
                         description: 'You are treated as resident and ordinarily resident from year 5 as you average more than 90 nights per year over a 4-year period in available accommodation.',
                         taxLiability: 'From year 5 onwards, liable to Jersey income tax on your world-wide income. Before year 5, you are resident but not ordinarily resident, liable on income arising in and remitted to Jersey.',
                         type: 'resident-ordinarily'
-                    });
-                    setStep('result');
+                    };
+                    state.step = 'result';
+                    render();
                     return;
                 }
 
                 if (key === 'nights' && value === 'under90') {
-                    setResult({
+                    state.result = {
                         status: 'Resident but Not Ordinarily Resident',
                         description: 'You are resident but not ordinarily resident as you stay in available accommodation but do not average more than 90 nights per year.',
                         taxLiability: 'Liable to Jersey income tax on all income arising in, and remitted to, Jersey.',
                         allowances: 'Allowances are apportioned for each day not spent in Jersey (excluding holidays and business trips).',
                         type: 'resident-not-ordinarily'
-                    });
-                    setStep('result');
+                    };
+                    state.step = 'result';
+                    render();
                     return;
                 }
-            };
+            }
 
-            const resetQuestionnaire = () => {
-                setStep('initial');
-                setAnswers({});
-                setResult(null);
-            };
+            function resetQuestionnaire() {
+                state = {
+                    step: 'initial',
+                    answers: {},
+                    result: null
+                };
+                render();
+            }
 
-            const renderStep = () => {
-                if (step === 'result') {
-                    return (
-                        <div className="space-y-6">
-                            <div className={`${result.type === 'non-resident' ? 'bg-green-50 border-green-200' : result.type === 'resident-not-ordinarily' ? 'bg-yellow-50 border-yellow-200' : 'bg-red-50 border-red-200'} border p-6 rounded`}>
-                                <div className="flex items-start">
-                                    <svg className="h-7 w-7 text-blue-600 mr-3 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <circle cx="12" cy="12" r="10" strokeWidth="2"/>
-                                        <path strokeWidth="2" d="M12 16v-4M12 8h.01"/>
-                                    </svg>
-                                    <div className="flex-1">
-                                        <h3 className="text-lg font-bold text-gray-900 mb-3">Your Tax Residency Status</h3>
-                                        <div className="bg-white p-4 rounded border border-gray-200 mb-4">
-                                            <p className="text-xl font-bold text-red-600">{result.status}</p>
-                                        </div>
-                                        <p className="text-gray-800 mb-4 leading-relaxed">{result.description}</p>
-                                        <div className="bg-gray-50 p-4 rounded border border-gray-200">
-                                            <h4 className="font-bold text-gray-900 mb-2">Tax Liability:</h4>
-                                            <p className="text-gray-800 leading-relaxed">{result.taxLiability}</p>
-                                            {result.allowances && (
-                                                <>
-                                                    <h4 className="font-bold text-gray-900 mt-4 mb-2">Allowances:</h4>
-                                                    <p className="text-gray-800 leading-relaxed">{result.allowances}</p>
-                                                </>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <button
-                                onClick={resetQuestionnaire}
-                                className="w-full bg-red-600 text-white py-3 px-6 rounded font-semibold hover:bg-red-700 transition-colors flex items-center justify-center"
-                            >
-                                <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeWidth="2" d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
-                                    <path strokeWidth="2" d="M21 3v5h-5"/>
-                                    <path strokeWidth="2" d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
-                                    <path strokeWidth="2" d="M8 16H3v5"/>
-                                </svg>
-                                Start New Assessment
-                            </button>
-                        </div>
-                    );
+            function render() {
+                var container = document.getElementById('question-container');
+                
+                if (state.step === 'result') {
+                    var allowancesHtml = state.result.allowances ? 
+                        '<h4>Allowances:</h4><p>' + state.result.allowances + '</p>' : '';
+                    
+                    container.innerHTML = 
+                        '<div class="result-box ' + state.result.type + '">' +
+                            '<div class="result-content">' +
+                                '<h3>Your Tax Residency Status</h3>' +
+                                '<div class="result-status">' +
+                                    '<p>' + state.result.status + '</p>' +
+                                '</div>' +
+                                '<p style="margin-bottom: 1rem">' + state.result.description + '</p>' +
+                                '<div class="result-details">' +
+                                    '<h4>Tax Liability:</h4>' +
+                                    '<p>' + state.result.taxLiability + '</p>' +
+                                    allowancesHtml +
+                                '</div>' +
+                            '</div>' +
+                        '</div>' +
+                        '<button id="reset-btn" class="primary-button">Start New Assessment</button>';
+                    
+                    document.getElementById('reset-btn').addEventListener('click', resetQuestionnaire);
+                    return;
                 }
 
-                const questions = {
-                    initial: {
-                        title: 'How many days will you spend in Jersey per year?',
-                        subtitle: 'This includes all visits throughout the year, including days of arrival and departure.',
-                        options: [
-                            { value: 'under60', title: 'Fewer than 60 days', subtitle: 'Short-term business visitor' },
-                            { value: 'over60', title: '60 days or more', subtitle: 'Continue to determine your status' }
-                        ]
-                    },
-                    moving: {
-                        title: 'Are you moving to Jersey to live and work?',
-                        subtitle: 'This means relocating your main home, possessions, and financial affairs to Jersey.',
-                        options: [
-                            { value: 'yes', title: 'Yes - Moving to Jersey', subtitle: 'Relocating my life to the Island' },
-                            { value: 'no', title: 'No - Living abroad but visiting', subtitle: 'Maintaining my main home elsewhere' }
-                        ]
-                    },
-                    duration: {
-                        title: 'How long do you plan to live in Jersey?',
-                        subtitle: 'Consider your employment duration and whether you\'re settling permanently.',
-                        options: [
-                            { value: 'indefinite', title: 'Settling permanently (indefinite)', subtitle: 'Making Jersey my main home with no end date' },
-                            { value: 'over4years', title: 'More than 4 years', subtitle: 'I foresee living here for over 4 years' },
-                            { value: 'under4years', title: '4 years or fewer', subtitle: 'Temporary stay while maintaining life elsewhere' }
-                        ]
-                    },
-                    contract: {
-                        title: 'Is your employment contract fixed-term for 4 years or fewer?',
-                        subtitle: 'This applies if you\'re maintaining your centre of life in a different country.',
-                        options: [
-                            { value: 'fixed', title: 'Yes - Fixed term ≤ 4 years', subtitle: 'Defined contract end date within 4 years' },
-                            { value: 'notfixed', title: 'No - Open-ended or unclear', subtitle: 'Not a fixed-term contract of 4 years or fewer' }
-                        ]
-                    },
-                    visitor: {
-                        title: 'Where do you stay when visiting Jersey?',
-                        subtitle: 'Available accommodation means property you own, rent, or lease - not hotels.',
-                        options: [
-                            { value: 'hotel', title: 'Hotels or guest houses only', subtitle: 'No property I own or lease' },
-                            { value: 'owned', title: 'Property I own, rent, or lease', subtitle: 'Available accommodation in my name' }
-                        ]
-                    },
-                    nights: {
-                        title: 'How many nights per year do you spend in Jersey (on average)?',
-                        subtitle: 'Consider your average over a 4-year period.',
-                        options: [
-                            { value: 'over90', title: 'More than 90 nights per year', subtitle: 'Averaged over 4 years' },
-                            { value: 'under90', title: '90 nights or fewer per year', subtitle: 'Averaged over 4 years' }
-                        ]
-                    }
-                };
+                var currentQuestion = questions[state.step];
+                
+                var html = 
+                    '<div class="question-box">' +
+                        '<h3>' + currentQuestion.title + '</h3>' +
+                        '<p>' + currentQuestion.subtitle + '</p>' +
+                    '</div>' +
+                    '<div class="button-group">';
 
-                const currentQuestion = questions[step];
+                currentQuestion.options.forEach(function(option) {
+                    html += 
+                        '<button class="option-button" data-step="' + state.step + '" data-value="' + option.value + '">' +
+                            '<div class="option-button-title">' + option.title + '</div>' +
+                            '<div class="option-button-subtitle">' + option.subtitle + '</div>' +
+                        '</button>';
+                });
 
-                return (
-                    <div className="space-y-6">
-                        <div className="bg-gray-50 p-5 rounded border border-gray-200">
-                            <h3 className="text-lg font-bold text-gray-900 mb-3">{currentQuestion.title}</h3>
-                            <p className="text-sm text-gray-700 leading-relaxed">{currentQuestion.subtitle}</p>
-                        </div>
-                        
-                        <div className="space-y-3">
-                            {currentQuestion.options.map(option => (
-                                <button
-                                    key={option.value}
-                                    onClick={() => handleAnswer(step, option.value)}
-                                    className="w-full bg-white border-2 border-gray-300 hover:border-red-600 hover:bg-red-50 py-4 px-6 rounded text-left transition-colors"
-                                >
-                                    <div className="font-bold text-gray-900">{option.title}</div>
-                                    <div className="text-sm text-gray-600 mt-1">{option.subtitle}</div>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                );
-            };
+                html += '</div>';
+                container.innerHTML = html;
 
-            return (
-                <div className="min-h-screen bg-white">
-                    <div className="bg-red-600 text-white">
-                        <div className="max-w-4xl mx-auto px-6 py-4">
-                            <h1 className="text-2xl font-bold">Government of Jersey</h1>
-                        </div>
-                    </div>
+                var buttons = container.querySelectorAll('.option-button');
+                for (var i = 0; i < buttons.length; i++) {
+                    buttons[i].addEventListener('click', function() {
+                        var step = this.getAttribute('data-step');
+                        var value = this.getAttribute('data-value');
+                        handleAnswer(step, value);
+                    });
+                }
+            }
 
-                    <div className="bg-gray-100 border-b border-gray-300">
-                        <div className="max-w-4xl mx-auto px-6 py-3">
-                            <p className="text-sm text-gray-700">
-                                <a href="#" className="text-red-600 hover:underline">Home</a>
-                                <span className="mx-2">&gt;</span>
-                                <a href="#" className="text-red-600 hover:underline">Taxes and money</a>
-                                <span className="mx-2">&gt;</span>
-                                <span>Tax residency assessment</span>
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="max-w-4xl mx-auto px-6 py-8">
-                        <div className="mb-8">
-                            <h2 className="text-3xl font-bold text-gray-900 mb-4">Jersey Tax Residency Assessment</h2>
-                            <p className="text-lg text-gray-700 leading-relaxed">
-                                Determine your tax residency status for Jersey income tax purposes. Your residency status determines what income you pay tax on and what allowances you receive.
-                            </p>
-                        </div>
-
-                        <div className="bg-white border border-gray-300 rounded p-6 mb-6 shadow-sm">
-                            {renderStep()}
-                        </div>
-
-                        <div className="bg-blue-50 border border-blue-200 rounded p-6">
-                            <h3 className="text-lg font-bold text-gray-900 mb-3">Important Information</h3>
-                            <ul className="space-y-3 text-sm text-gray-800">
-                                <li className="flex items-start">
-                                    <span className="text-red-600 mr-2 font-bold">•</span>
-                                    <span className="leading-relaxed">This tool provides guidance only. For specific advice, contact Revenue Jersey or a tax professional.</span>
-                                </li>
-                                <li className="flex items-start">
-                                    <span className="text-red-600 mr-2 font-bold">•</span>
-                                    <span className="leading-relaxed">Double tax agreements with other jurisdictions may affect your tax position.</span>
-                                </li>
-                                <li className="flex items-start">
-                                    <span className="text-red-600 mr-2 font-bold">•</span>
-                                    <span className="leading-relaxed">Visit <a href="https://www.gov.je/TaxesMoney/IncomeTax/Individuals/IncomeTaxCircumstances/pages/residencyforjerseytax.aspx" className="text-red-600 underline hover:text-red-700">gov.je</a> for complete residency information.</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div className="bg-gray-800 text-white mt-12">
-                        <div className="max-w-4xl mx-auto px-6 py-8">
-                            <div className="text-center">
-                                <p className="text-sm">&copy; {new Date().getFullYear()} Government of Jersey. All rights reserved.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-
-        ReactDOM.render(<JerseyTaxResidency />, document.getElementById('root'));
+            document.getElementById('year').textContent = new Date().getFullYear();
+            render();
+        })();
     </script>
 </body>
 </html>
