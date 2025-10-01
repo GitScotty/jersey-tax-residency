@@ -312,10 +312,10 @@
             var questions = {
                 initial: {
                     title: 'How many days will you spend in Jersey per year?',
-                    subtitle: 'This includes all visits throughout the year, including days of arrival and departure.',
+                    subtitle: 'This includes all visits throughout the year, including days of arrival and departure, weekends and holidays.',
                     options: [
-                        { value: 'under60', title: 'Fewer than 60 days', subtitle: 'Short-term business visitor' },
-                        { value: 'over60', title: '60 days or more', subtitle: 'Continue to determine your status' }
+                        { value: 'under60', title: 'Fewer than 60 days', subtitle: '' },
+                        { value: 'over60', title: '60 days or more', subtitle: '' }
                     ]
                 },
                 moving: {
@@ -385,8 +385,8 @@
                 if (key === 'initial' && value === 'under60') {
                     console.log('Matched: initial under60');
                     state.result = {
-                        status: 'Non-Resident (Short-term Business Visitor)',
-                        description: 'You are considered a short-term business visitor and non-resident.',
+                        status: 'Non-resident (Short-term business visitor)',
+                        description: 'If you are employed while in Jersey you are considered a short-term business visitor and non-resident.',
                         taxLiability: 'Your Jersey-sourced income is exempt from income tax. You are not required to register with Revenue Jersey.',
                         type: 'non-resident'
                     };
