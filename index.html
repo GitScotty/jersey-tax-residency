@@ -552,16 +552,20 @@
 
                 var buttons = container.querySelectorAll('.option-button');
                 for (var i = 0; i < buttons.length; i++) {
-                    buttons[i].addEventListener('click', function() {
+                    buttons[i].addEventListener('click', function(e) {
+                        e.preventDefault();
                         var step = this.getAttribute('data-step');
                         var value = this.getAttribute('data-value');
+                        console.log('Button clicked:', step, value);
                         handleAnswer(step, value);
                     });
                 }
             }
 
             document.getElementById('year').textContent = new Date().getFullYear();
+            console.log('Script loaded, rendering initial state...');
             render();
+            console.log('Initial render complete');
         })();
     </script>
 </body>
