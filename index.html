@@ -318,6 +318,14 @@
                         { value: 'over60', title: '60 days or more', subtitle: '' }
                     ]
                 },
+                visitorUnder60: {
+                    title: 'Where do you stay when travelling to Jersey?',
+                    subtitle: '',
+                    options: [
+                        { value: 'hotel', title: 'Hotels or guest houses only', subtitle: '' },
+                        { value: 'owned', title: 'Property I own, rent or is otherwise available for my use', subtitle: 'Accommodation I own, rent or cohabitate with a partner or immediate family where I have a continued expectation to use it without pre-consent.' }
+                    ]
+                },
                 moving: {
                     title: 'Are you moving to Jersey with the intention of living here in a settled manner?',
                     subtitle: 'This means establishing Jersey as your habitual place of residence — whether for work, to live with a partner or family, to retire, or to take an extended break from work.',
@@ -373,9 +381,17 @@
                 state.answers[key] = value;
                 console.log('Current state:', state);
 
-                // Initial question is about days
+                // Initial question - under 60 days now goes to accommodation question
                 if (key === 'initial' && value === 'under60') {
-                    console.log('Matched: initial under60');
+                    console.log('Matched: initial under60 - going to visitorUnder60');
+                    state.step = 'visitorUnder60';
+                    render();
+                    return;
+                }
+
+                // New handler for under 60 days accommodation
+                if (key === 'visitorUnder60' && value === 'hotel') {
+                    console.log('Matched: visitorUnder60 hotel');
                     state.result = {
                         status: 'Non-Resident (Short-term business visitor)',
                         description: 'If you are employed while in Jersey you are considered a short-term business visitor and non-resident.',
@@ -383,9 +399,21 @@
                         type: 'non-resident'
                     };
                     state.step = 'result';
-                    console.log('About to render result...');
                     render();
-                    console.log('Render complete');
+                    return;
+                }
+
+                if (key === 'visitorUnder60' && value === 'owned') {
+                    console.log('Matched: visitorUnder60 owned');
+                    state.result = {
+                        status: 'Resident but Not Ordinarily Resident',
+                        description: 'You are resident but not ordinarily resident as you stay in available accommodation even though you spend fewer than 60 days in Jersey.',
+                        taxLiability: 'Liable to Jersey income tax on all income arising in, and remitted to, Jersey.',
+                        allowances: 'Allowances are apportioned for each day not spent in Jersey (excluding holidays and business trips).',
+                        type: 'resident-not-ordinarily'
+                    };
+                    state.step = 'result';
+                    render();
                     return;
                 }
 
