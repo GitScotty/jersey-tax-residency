@@ -203,7 +203,7 @@
             padding: 0.75rem 1.5rem;
             border: none;
             border-radius: 0.25rem;
-            font-weight: 0;
+            font-weight: 600;
             cursor: pointer;
             font-size: 1rem;
             transition: background 0.2s;
@@ -278,7 +278,7 @@
     <div class="container">
         <div class="intro">
             <h2>Jersey tax residence assessment tool for individuals without prior residence status</h2>
-            <p>Determine your tax residence status for Jersey income tax purposes. Your residence status determines what income you pay tax on and what allowances you receive. This does not apply to individuals whose ordinary residence has been in Jersey. </p>
+            <p>Determine your tax residence status for Jersey income tax purposes. Your residence status determines what income you pay tax on and what allowances you receive. <strong>This does not apply to individuals whose ordinary residence has been in Jersey.</strong></p>
         </div>
 
         <div class="card">
@@ -324,6 +324,14 @@
                     options: [
                         { value: 'hotel', title: 'Hotels or guest houses only', subtitle: '' },
                         { value: 'owned', title: 'Property I own, rent or is otherwise available for my use', subtitle: 'Accommodation I own, rent or cohabitate with a partner or immediate family where I have a continued expectation to use it without pre-consent.' }
+                    ]
+                },
+                placeOfResidence: {
+                    title: 'Do you maintain a place of residence outside of Jersey?',
+                    subtitle: '',
+                    options: [
+                        { value: 'yes', title: 'Yes - I maintain a home elsewhere', subtitle: '' },
+                        { value: 'no', title: 'No - Jersey is my only home', subtitle: '' }
                     ]
                 },
                 moving: {
@@ -404,13 +412,34 @@
                 }
 
                 if (key === 'visitorUnder60' && value === 'owned') {
-                    console.log('Matched: visitorUnder60 owned');
+                    console.log('Matched: visitorUnder60 owned - going to placeOfResidence');
+                    state.step = 'placeOfResidence';
+                    render();
+                    return;
+                }
+
+                // Handler for place of residence question
+                if (key === 'placeOfResidence' && value === 'yes') {
+                    console.log('Matched: placeOfResidence yes');
                     state.result = {
                         status: 'Resident but Not Ordinarily Resident',
-                        description: 'You are resident but not ordinarily resident as you stay in available accommodation even though you spend 60 days or fewer in Jersey.',
+                        description: 'You are resident but not ordinarily resident as you stay in available accommodation even though you spend 60 days or fewer in Jersey, while maintaining a place of residence elsewhere.',
                         taxLiability: 'Liable to Jersey income tax on all income arising in, and remitted to, Jersey.',
                         allowances: 'Allowances are apportioned for each day not spent in Jersey (excluding holidays and business trips).',
                         type: 'resident-not-ordinarily'
+                    };
+                    state.step = 'result';
+                    render();
+                    return;
+                }
+
+                if (key === 'placeOfResidence' && value === 'no') {
+                    console.log('Matched: placeOfResidence no');
+                    state.result = {
+                        status: 'Resident and Ordinarily Resident',
+                        description: 'You are resident and ordinarily resident from day one as Jersey is your only home, even though you spend 60 days or fewer in Jersey.',
+                        taxLiability: 'Liable to Jersey income tax on your world-wide income regardless of where it arises. If you pay tax on the same income in another jurisdiction, a credit may be available for foreign taxes paid.',
+                        type: 'resident-ordinarily'
                     };
                     state.step = 'result';
                     render();
