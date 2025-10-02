@@ -395,7 +395,7 @@
                     state.result = {
                         status: 'Non-Resident (Short-term business visitor)',
                         description: 'If you are employed while in Jersey you are considered a short-term business visitor and non-resident.',
-                        taxLiability: 'Your Jersey-sourced income is exempt from income tax. You are not required to register with Revenue Jersey.',
+                        taxLiability: 'Your Jersey-sourced income (other than income accuring from property situated in Jersey) is exempt from income tax. You are not required to register with Revenue Jersey.',
                         type: 'non-resident'
                     };
                     state.step = 'result';
@@ -501,9 +501,9 @@
 
                 if (key === 'visitor' && value === 'hotel') {
                     state.result = {
-                        status: 'Generally Non-Resident',
-                        description: 'If you stay in hotels and do not exceed 60 days, you are generally not considered resident.',
-                        taxLiability: 'Limited or no Jersey income tax liability on Jersey-sourced income only.',
+                        status: 'Non-Resident',
+                        description: 'If you stay in hotels and do not exceed 60 days, you are generally not considered resident (some exceptions may apply).',
+                        taxLiability: 'Your Jersey-sourced income (other than income accuring from property situated in Jersey) is exempt from income tax.',
                         type: 'non-resident'
                     };
                     state.step = 'result';
