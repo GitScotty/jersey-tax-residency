@@ -203,7 +203,7 @@
             padding: 0.75rem 1.5rem;
             border: none;
             border-radius: 0.25rem;
-            font-weight: 600;
+            font-weight: 0;
             cursor: pointer;
             font-size: 1rem;
             transition: background 0.2s;
@@ -314,8 +314,8 @@
                     title: 'How many days will you spend in Jersey during the calendar year?',
                     subtitle: 'This includes all visits throughout the year, including days of arrival and departure, weekends and holidays.',
                     options: [
-                        { value: 'under60', title: 'Fewer than 60 days', subtitle: '' },
-                        { value: 'over60', title: '60 days or more', subtitle: '' }
+                        { value: 'under60', title: '60 days or fewer', subtitle: '' },
+                        { value: 'over60', title: '61 days or more', subtitle: '' }
                     ]
                 },
                 visitorUnder60: {
@@ -381,7 +381,7 @@
                 state.answers[key] = value;
                 console.log('Current state:', state);
 
-                // Initial question - under 60 days now goes to accommodation question
+                // Initial question - 60 days or fewer now goes to accommodation question
                 if (key === 'initial' && value === 'under60') {
                     console.log('Matched: initial under60 - going to visitorUnder60');
                     state.step = 'visitorUnder60';
@@ -393,9 +393,9 @@
                 if (key === 'visitorUnder60' && value === 'hotel') {
                     console.log('Matched: visitorUnder60 hotel');
                     state.result = {
-                        status: 'Non-Resident (Short-term business visitor if working)',
+                        status: 'Non-Resident',
                         description: 'If you are employed while in Jersey you are considered a short-term business visitor and non-resident.',
-                        taxLiability: 'Your Jersey-sourced income (other than income accuring from property situated in Jersey) is exempt from income tax. You are not required to register with Revenue Jersey.',
+                        taxLiability: 'Your Jersey-source income (such as earnings from work) is exempt from income tax, unless it accrues from Jersey property. Overseas income is also not taxable. You only need to register with Revenue Jersey if you have property income.',
                         type: 'non-resident'
                     };
                     state.step = 'result';
@@ -407,7 +407,7 @@
                     console.log('Matched: visitorUnder60 owned');
                     state.result = {
                         status: 'Resident but Not Ordinarily Resident',
-                        description: 'You are resident but not ordinarily resident as you stay in available accommodation even though you spend fewer than 60 days in Jersey.',
+                        description: 'You are resident but not ordinarily resident as you stay in available accommodation even though you spend 60 days or fewer in Jersey.',
                         taxLiability: 'Liable to Jersey income tax on all income arising in, and remitted to, Jersey.',
                         allowances: 'Allowances are apportioned for each day not spent in Jersey (excluding holidays and business trips).',
                         type: 'resident-not-ordinarily'
@@ -533,7 +533,7 @@
                     state.result = {
                         status: 'Resident but Not Ordinarily Resident',
                         description: 'You are resident but not ordinarily resident as you stay in available accommodation but do not average more than 90 nights per year.',
-                        taxLiability: 'Liable to Jersey income tax on all income arising in, and remitted to, Jersey.',
+                        taxLiability: 'Liable to income tax on all income arising in Jersey and overseas income remitted to Jersey.',
                         allowances: 'Allowances are apportioned for each day not spent in Jersey (excluding holidays and business trips).',
                         type: 'resident-not-ordinarily'
                     };
