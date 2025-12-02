@@ -446,16 +446,6 @@
                     ]
                 },
                 
-                // Visitor in hotels - 183 day check
-                arriveVisitorHotel183: {
-                    title: 'Will you exceed 183 days in Jersey in any single year?',
-                    subtitle: '',
-                    options: [
-                        { value: 'yes', title: 'Yes - More than 183 days in at least one year', subtitle: '' },
-                        { value: 'no', title: 'No - 183 days or fewer each year', subtitle: '' }
-                    ]
-                },
-                
                 // Visitor in hotels - Habituality check
                 arriveVisitorHotelHabitual: {
                     title: 'Will your visits average 90 or more days per year over a 4-year period?',
@@ -675,7 +665,21 @@
                 
                 // Visitor accommodation
                 if (key === 'arriveVisitorAccommodation' && value === 'hotel') {
-                    state.step = 'arriveVisitorHotel183';
+                    // If they already said over 183 days, they're RNOR for that year
+                    if (state.answers.arriveDays === 'over183') {
+                        state.result = {
+                            status: 'Resident but Not Ordinarily Resident',
+                            description: 'You are resident but not ordinarily resident for any year in which you exceed 183 days in Jersey, even when staying in hotels.',
+                            taxLiability: 'You are liable to Jersey income tax on all income arising in Jersey and overseas income remitted to Jersey for years in which you exceed 183 days. If your visits become habitual (averaging 90 or more days per year over four years), you will become resident and ordinarily resident from year 5.',
+                            allowances: 'Allowances are apportioned for each day not spent in Jersey (excluding holidays and business trips).',
+                            type: 'resident-not-ordinarily'
+                        };
+                        state.step = 'result';
+                        render();
+                        return;
+                    }
+                    // For 61-183 days, skip straight to habituality check
+                    state.step = 'arriveVisitorHotelHabitual';
                     render();
                     return;
                 }
@@ -686,32 +690,13 @@
                     return;
                 }
                 
-                // Visitor hotels - 183 days
-                if (key === 'arriveVisitorHotel183' && value === 'no') {
-                    state.step = 'arriveVisitorHotelHabitual';
-                    render();
-                    return;
-                }
-                
-                if (key === 'arriveVisitorHotel183' && value === 'yes') {
-                    state.result = {
-                        status: 'Resident but Not Ordinarily Resident',
-                        description: 'You are resident but not ordinarily resident for any year in which you exceed 183 days in Jersey, even when staying in hotels.',
-                        taxLiability: 'You are liable to Jersey income tax on all income arising in Jersey and overseas income remitted to Jersey for years in which you exceed 183 days. If your visits become habitual (averaging 90 or more days per year over four years), you will become resident and ordinarily resident from year 5.',
-                        allowances: 'Allowances are apportioned for each day not spent in Jersey (excluding holidays and business trips).',
-                        type: 'resident-not-ordinarily'
-                    };
-                    state.step = 'result';
-                    render();
-                    return;
-                }
-                
                 // Visitor hotels - Habitual
                 if (key === 'arriveVisitorHotelHabitual' && value === 'no') {
                     state.result = {
                         status: 'Non-Resident',
                         description: 'You are not considered resident in Jersey as you do not exceed 183 days in any year and your visits are not habitual.',
                         taxLiability: 'Your Jersey-source income is exempt from Jersey income tax, unless it accrues from Jersey property. Overseas income is not taxable in Jersey.',
+                        note: 'If you end up staying more than 183 days in any year, you will be resident but not ordinarily resident for that year.',
                         type: 'non-resident'
                     };
                     state.step = 'result';
@@ -724,6 +709,7 @@
                         status: 'Non-Resident (Years 1-4), then Resident and Ordinarily Resident (from Year 5)',
                         description: 'Your visits are considered habitual as they average 90 or more days per year and form part of your regular pattern of life. You are not resident for years 1-4 but become resident and ordinarily resident from the fifth year.',
                         taxLiability: 'Years 1-4: Your Jersey-source income is exempt from Jersey income tax (unless from Jersey property). From year 5: You are liable to Jersey income tax on your worldwide income.',
+                        note: 'If you end up staying more than 183 days in any year, you will be resident but not ordinarily resident for that year.',
                         type: 'resident-ordinarily'
                     };
                     state.step = 'result';
@@ -894,6 +880,9 @@
                     var allowancesHtml = state.result.allowances ? 
                         '<h4>Allowances:</h4><p>' + state.result.allowances + '</p>' : '';
                     
+                    var noteHtml = state.result.note ?
+                        '<h4>Note:</h4><p>' + state.result.note + '</p>' : '';
+                    
                     container.innerHTML = 
                         '<div class="result-box ' + state.result.type + '">' +
                             '<div class="result-content">' +
@@ -906,6 +895,7 @@
                                     '<h4>Tax Liability:</h4>' +
                                     '<p>' + state.result.taxLiability + '</p>' +
                                     allowancesHtml +
+                                    noteHtml +
                                 '</div>' +
                             '</div>' +
                         '</div>' +
