@@ -227,6 +227,36 @@
             background: #a00d24;
         }
         
+        .secondary-button {
+            background: white;
+            color: #C8102E;
+            padding: 0.75rem 1.5rem;
+            border: 2px solid #C8102E;
+            border-radius: 0.25rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        
+        .secondary-button:hover {
+            background: #fef2f2;
+        }
+        
+        .button-row {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .button-row .secondary-button {
+            flex: 0 0 auto;
+        }
+        
+        .button-row .primary-button {
+            flex: 1;
+        }
+        
         .info-box {
             background: #dbeafe;
             border: 1px solid #93c5fd;
@@ -320,7 +350,8 @@
             var state = {
                 step: 'initial',
                 answers: {},
-                result: null
+                result: null,
+                history: []
             };
 
             var questions = {
@@ -486,6 +517,7 @@
 
             function handleAnswer(key, value) {
                 state.answers[key] = value;
+                state.history.push(state.step);
 
                 // ==================== INITIAL ROUTING ====================
                 
@@ -799,11 +831,20 @@
                 }
             }
 
+            function goBack() {
+                if (state.history.length > 0) {
+                    state.step = state.history.pop();
+                    state.result = null;
+                    render();
+                }
+            }
+
             function resetQuestionnaire() {
                 state = {
                     step: 'initial',
                     answers: {},
-                    result: null
+                    result: null,
+                    history: []
                 };
                 render();
             }
@@ -838,8 +879,12 @@
                                 '</div>' +
                             '</div>' +
                         '</div>' +
-                        '<button id="reset-btn" class="primary-button">Start New Assessment</button>';
+                        '<div class="button-row">' +
+                            '<button id="back-btn" class="secondary-button">← Back</button>' +
+                            '<button id="reset-btn" class="primary-button">Start New Assessment</button>' +
+                        '</div>';
                     
+                    document.getElementById('back-btn').addEventListener('click', goBack);
                     document.getElementById('reset-btn').addEventListener('click', resetQuestionnaire);
                     return;
                 }
@@ -864,8 +909,12 @@
                                 '</div>' +
                             '</div>' +
                         '</div>' +
-                        '<button id="reset-btn" class="primary-button">Start New Assessment</button>';
+                        '<div class="button-row">' +
+                            '<button id="back-btn" class="secondary-button">← Back</button>' +
+                            '<button id="reset-btn" class="primary-button">Start New Assessment</button>' +
+                        '</div>';
                     
+                    document.getElementById('back-btn').addEventListener('click', goBack);
                     document.getElementById('reset-btn').addEventListener('click', resetQuestionnaire);
                     return;
                 }
@@ -889,7 +938,19 @@
                 });
 
                 html += '</div>';
+                
+                // Add back button if not on initial question
+                if (state.step !== 'initial') {
+                    html += '<button id="back-btn" class="secondary-button" style="margin-top: 1.5rem;">← Back</button>';
+                }
+                
                 container.innerHTML = html;
+
+                // Add back button listener if present
+                var backBtn = document.getElementById('back-btn');
+                if (backBtn) {
+                    backBtn.addEventListener('click', goBack);
+                }
 
                 var buttons = container.querySelectorAll('.option-button');
                 for (var i = 0; i < buttons.length; i++) {
