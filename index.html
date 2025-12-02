@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jersey tax residence assessment tool for individuals without prior residence status</title>
+    <title>Jersey Tax Residence Assessment Tool</title>
     <style>
         * {
             margin: 0;
@@ -155,6 +155,11 @@
             border-color: #fca5a5;
         }
         
+        .result-box.multifactorial {
+            background: #e0e7ff;
+            border-color: #a5b4fc;
+        }
+        
         .result-content h3 {
             font-size: 1.125rem;
             font-weight: bold;
@@ -194,6 +199,15 @@
         
         .result-details p:last-child {
             margin-bottom: 0;
+        }
+        
+        .result-details ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .result-details li {
+            margin-bottom: 0.5rem;
         }
         
         .primary-button {
@@ -277,8 +291,8 @@
 
     <div class="container">
         <div class="intro">
-            <h2>Jersey tax residence assessment tool for individuals without prior residence status</h2>
-            <p>Determine your tax residence status for Jersey income tax purposes. Your residence status determines what income you pay tax on and what allowances you receive. <strong>This does not apply to individuals whose ordinary residence has been in Jersey.</strong></p>
+            <h2>Jersey Tax Residence Assessment Tool</h2>
+            <p>Determine your tax residence status for Jersey income tax purposes. Your residence status determines what income you pay tax on and what allowances you receive.</p>
         </div>
 
         <div class="card">
@@ -290,7 +304,7 @@
             <ul>
                 <li><span class="bullet">•</span> This tool provides guidance only. For specific advice, contact Revenue Jersey or a tax professional.</li>
                 <li><span class="bullet">•</span> Double tax agreements with other jurisdictions may affect your tax position.</li>
-                <li><span class="bullet">•</span> Visit  <a href="https://www.gov.je/TaxesMoney/IncomeTax/Individuals/IncomeTaxCircumstances/pages/residencyforjerseytax.aspx"> gov.je </a>  for complete residence information.</li>
+                <li><span class="bullet">•</span> Visit <a href="https://www.gov.je/TaxesMoney/IncomeTax/Individuals/IncomeTaxCircumstances/pages/residencyforjerseytax.aspx">gov.je</a> for complete residence information.</li>
             </ul>
         </div>
     </div>
@@ -310,39 +324,59 @@
             };
 
             var questions = {
+                // INITIAL QUESTION
                 initial: {
-                    title: 'How many days will you spend in Jersey during the calendar year?',
-                    subtitle: 'This includes all visits throughout the year, including days of arrival and departure, weekends and holidays.',
+                    title: 'What is your current situation?',
+                    subtitle: 'Select the option that best describes your circumstances.',
                     options: [
-                        { value: 'under60', title: '60 days or fewer', subtitle: '' },
-                        { value: 'over60', title: '61 days or more', subtitle: '' }
+                        { value: 'arriving', title: 'Arriving in Jersey', subtitle: 'I have never been ordinarily resident in Jersey, or I am returning after a period of non-residence.' },
+                        { value: 'leaving', title: 'Leaving Jersey', subtitle: 'I am ordinarily resident in Jersey and considering spending time abroad.' }
                     ]
                 },
-                visitorUnder60: {
+
+                // ==================== ARRIVALS PATHWAY ====================
+                
+                arriveDays: {
+                    title: 'How many days will you spend in Jersey during the calendar year?',
+                    subtitle: 'This includes all visits throughout the year. The day of departure may be excluded when counting days.',
+                    options: [
+                        { value: 'under60', title: '60 days or fewer', subtitle: '' },
+                        { value: '61to183', title: '61 to 183 days', subtitle: '' },
+                        { value: 'over183', title: 'More than 183 days', subtitle: '' }
+                    ]
+                },
+                
+                // Under 60 days pathway
+                arriveUnder60Accommodation: {
                     title: 'Where will you stay while in Jersey?',
                     subtitle: '',
                     options: [
                         { value: 'hotel', title: 'Hotels or guest houses only', subtitle: '' },
-                        { value: 'owned', title: 'Property I own, rent or is otherwise available for my use', subtitle: 'Accommodation I own, rent or cohabitate with a partner or immediate family where I have a continued expectation to use it without pre-consent.' }
+                        { value: 'available', title: 'Accommodation available for my use', subtitle: 'Property I own, rent, or where I have a continued expectation to stay without prior consent (e.g. with a partner or immediate family).' }
                     ]
                 },
-                placeOfResidence: {
+                
+                arriveUnder60PlaceAbroad: {
                     title: 'Do you maintain a place of residence outside of Jersey?',
                     subtitle: '',
                     options: [
                         { value: 'yes', title: 'Yes - I have a home elsewhere', subtitle: 'You maintain a settled or usual place of residence outside Jersey.' },
-                        { value: 'no', title: 'No - I do not have a place of residence elsewehere', subtitle: 'You have no fixed address or presence outside Jersey. For example, flight crew, cruise ship staff, humanitarian aid worker, touring artist or athlete, military personnel on overseas deployment, etc.' }
+                        { value: 'no', title: 'No - I do not have a place of residence elsewhere', subtitle: 'You have no fixed address or settled home outside Jersey.' }
                     ]
                 },
-                moving: {
+                
+                // 61+ days pathway - Moving question
+                arriveMoving: {
                     title: 'Are you moving to Jersey with the intention of living here in a settled manner?',
                     subtitle: 'This means establishing Jersey as your habitual place of residence — whether for work, to live with a partner or family, to retire, or to take an extended break from work.',
                     options: [
                         { value: 'yes', title: 'Yes - Moving to Jersey in a settled manner', subtitle: 'Relocating to the Island as a habitual place of residence.' },
-                        { value: 'no', title: 'No - Living abroad but visiting or commuting for work', subtitle: 'Maintaining my place of residence elsewhere.' }
+                        { value: 'no', title: 'No - Living abroad but visiting or commuting', subtitle: 'Maintaining my place of residence elsewhere.' }
                     ]
                 },
-                centreOfLife: {
+                
+                // Moving to Jersey - Centre of life
+                arriveCentreOfLife: {
                     title: 'Will you be maintaining a home and life outside of Jersey while living here?',
                     subtitle: 'This means keeping a place to live (even if rented out), assets, and personal affairs in another country.',
                     options: [
@@ -350,7 +384,9 @@
                         { value: 'no', title: 'No - Making Jersey my only home', subtitle: 'Maintaining no other home and transferring my affairs to Jersey.' }
                     ]
                 },
-                durationMaintaining: {
+                
+                // Moving - Duration
+                arriveDuration: {
                     title: 'How long do you plan to live in Jersey?',
                     subtitle: 'While you maintain a life outside Jersey.',
                     options: [
@@ -358,73 +394,153 @@
                         { value: 'over4years', title: 'More than 4 years', subtitle: 'I foresee living here for over 4 years.' }
                     ]
                 },
-                contract: {
+                
+                // Moving - Contract
+                arriveContract: {
                     title: 'Is your employment contract fixed-term for 4 years or fewer?',
-                    subtitle: 'This applies if you\'re maintaining a life in a different country.',
+                    subtitle: 'This applies if you are maintaining a life in a different country.',
                     options: [
                         { value: 'fixed', title: 'Yes - Fixed term ≤ 4 years', subtitle: 'Defined contract end date within 4 years.' },
                         { value: 'notfixed', title: 'No - Open-ended or not specified', subtitle: 'Not a fixed-term contract of 4 years or fewer.' }
                     ]
                 },
-                visitor: {
+                
+                // Visitor pathway (not moving, 61+ days)
+                arriveVisitorAccommodation: {
                     title: 'Where do you stay when visiting Jersey?',
                     subtitle: '',
                     options: [
                         { value: 'hotel', title: 'Hotels or guest houses only', subtitle: '' },
-                        { value: 'owned', title: 'Property I own, rent or is otherwise available for my use', subtitle: 'Accommodation I own, rent or cohabitate with a partner or immediate family where I have a continued expectation to use it without pre-consent.' }
+                        { value: 'available', title: 'Accommodation available for my use', subtitle: 'Property I own, rent, or where I have a continued expectation to stay without prior consent.' }
                     ]
                 },
-                nights: {
+                
+                // Visitor in hotels - 183 day check
+                arriveVisitorHotel183: {
+                    title: 'Will you exceed 183 days in Jersey in any single year?',
+                    subtitle: '',
+                    options: [
+                        { value: 'yes', title: 'Yes - More than 183 days in at least one year', subtitle: '' },
+                        { value: 'no', title: 'No - 183 days or fewer each year', subtitle: '' }
+                    ]
+                },
+                
+                // Visitor in hotels - Habituality check
+                arriveVisitorHotelHabitual: {
+                    title: 'Will your visits average 90 or more days per year over a 4-year period?',
+                    subtitle: 'Consider whether your visits will become habitual and part of your regular pattern of life.',
+                    options: [
+                        { value: 'yes', title: 'Yes - Averaging 90+ days per year', subtitle: 'Visits are substantial and habitual.' },
+                        { value: 'no', title: 'No - Averaging fewer than 90 days per year', subtitle: 'Visits are occasional and not habitual.' }
+                    ]
+                },
+                
+                // Visitor with available accommodation - Nights average
+                arriveVisitorNights: {
                     title: 'How many nights per year do you spend in Jersey (on average)?',
                     subtitle: 'Consider your average over a 4-year period.',
                     options: [
                         { value: 'over90', title: 'More than 90 nights per year', subtitle: 'Averaged over 4 years.' },
                         { value: 'under90', title: '90 nights or fewer per year', subtitle: 'Averaged over 4 years.' }
                     ]
+                },
+
+                // ==================== DEPARTURES PATHWAY ====================
+                
+                leavePermanent: {
+                    title: 'Are you leaving Jersey permanently or temporarily?',
+                    subtitle: '',
+                    options: [
+                        { value: 'permanent', title: 'Permanently', subtitle: 'I am leaving Jersey to take up permanent residence abroad.' },
+                        { value: 'temporary', title: 'Temporarily or unsure', subtitle: 'I may return to Jersey after a period abroad.' }
+                    ]
+                },
+                
+                leaveEntireYear: {
+                    title: 'Will you be absent from Jersey for at least one entire tax year?',
+                    subtitle: 'A tax year runs from 1 January to 31 December. Occasional short visits in the pattern of a holidaymaker are permitted.',
+                    options: [
+                        { value: 'yes', title: 'Yes - Absent for at least one full tax year', subtitle: 'Only occasional holiday visits to Jersey.' },
+                        { value: 'no', title: 'No - Returning within the same tax year', subtitle: 'Or making frequent/regular visits.' }
+                    ]
+                },
+                
+                leaveEmployment: {
+                    title: 'Will you be in full-time employment abroad?',
+                    subtitle: 'Full-time generally means averaging at least 35 hours per week. Employment must be with a business established and operating overseas, not simply working remotely or on an extended business trip.',
+                    options: [
+                        { value: 'yes', title: 'Yes - Full-time foreign employment', subtitle: 'Employed by or through an overseas business, duties conducted outside Jersey.' },
+                        { value: 'no', title: 'No - Not in full-time foreign employment', subtitle: 'Retired, remote working for Jersey employer, self-employed, or other arrangements.' }
+                    ]
+                },
+                
+                leaveAccommodation: {
+                    title: 'Will you relinquish your available accommodation in Jersey?',
+                    subtitle: 'This means selling or renting out property you own, or removing your personal belongings from family accommodation such that it is no longer available for your use.',
+                    options: [
+                        { value: 'yes', title: 'Yes - Fully relinquishing accommodation', subtitle: 'Selling, renting out at arm\'s length, or genuinely no longer available.' },
+                        { value: 'no', title: 'No - Keeping accommodation available', subtitle: 'Retaining property or continued access to family home.' }
+                    ]
                 }
             };
 
             function handleAnswer(key, value) {
-                console.log('handleAnswer called with:', key, value);
                 state.answers[key] = value;
-                console.log('Current state:', state);
 
-                // Initial question - 60 days or fewer now goes to accommodation question
-                if (key === 'initial' && value === 'under60') {
-                    console.log('Matched: initial under60 - going to visitorUnder60');
-                    state.step = 'visitorUnder60';
+                // ==================== INITIAL ROUTING ====================
+                
+                if (key === 'initial' && value === 'arriving') {
+                    state.step = 'arriveDays';
+                    render();
+                    return;
+                }
+                
+                if (key === 'initial' && value === 'leaving') {
+                    state.step = 'leavePermanent';
                     render();
                     return;
                 }
 
-                // New handler for under 60 days accommodation
-                if (key === 'visitorUnder60' && value === 'hotel') {
-                    console.log('Matched: visitorUnder60 hotel');
+                // ==================== ARRIVALS PATHWAY ====================
+                
+                // Days in Jersey routing
+                if (key === 'arriveDays' && value === 'under60') {
+                    state.step = 'arriveUnder60Accommodation';
+                    render();
+                    return;
+                }
+                
+                if (key === 'arriveDays' && (value === '61to183' || value === 'over183')) {
+                    state.step = 'arriveMoving';
+                    render();
+                    return;
+                }
+                
+                // Under 60 days - Accommodation
+                if (key === 'arriveUnder60Accommodation' && value === 'hotel') {
                     state.result = {
                         status: 'Non-Resident',
-                        description: 'If you are employed while in Jersey you are considered a short-term business visitor and non-resident.',
-                        taxLiability: 'Your Jersey-source income (such as earnings from work) is exempt from income tax, unless it accrues from Jersey property. Overseas income is also not taxable. You only need to register with Revenue Jersey if you have property income.',
+                        description: 'You are not considered resident in Jersey as you spend 60 days or fewer and stay only in hotels or guest houses.',
+                        taxLiability: 'Your Jersey-source income is exempt from Jersey income tax, unless it accrues from Jersey property. Overseas income is not taxable in Jersey. You only need to register with Revenue Jersey if you have property income.',
                         type: 'non-resident'
                     };
                     state.step = 'result';
                     render();
                     return;
                 }
-
-                if (key === 'visitorUnder60' && value === 'owned') {
-                    console.log('Matched: visitorUnder60 owned - going to placeOfResidence');
-                    state.step = 'placeOfResidence';
+                
+                if (key === 'arriveUnder60Accommodation' && value === 'available') {
+                    state.step = 'arriveUnder60PlaceAbroad';
                     render();
                     return;
                 }
-
-                // Handler for place of residence question
-                if (key === 'placeOfResidence' && value === 'yes') {
-                    console.log('Matched: placeOfResidence yes');
+                
+                // Under 60 days - Place abroad
+                if (key === 'arriveUnder60PlaceAbroad' && value === 'yes') {
                     state.result = {
                         status: 'Resident but Not Ordinarily Resident',
-                        description: 'You are resident but not ordinarily resident as you stay in available accommodation even though you spend 60 days or fewer in Jersey, while maintaining a place of residence elsewhere.',
-                        taxLiability: 'Liable to Jersey income tax on all income arising in, and remitted to, Jersey.',
+                        description: 'You are resident but not ordinarily resident. Although you spend 60 days or fewer in Jersey, you stay in accommodation available for your use while maintaining a place of residence elsewhere.',
+                        taxLiability: 'You are liable to Jersey income tax on all income arising in Jersey and overseas income remitted to Jersey.',
                         allowances: 'Allowances are apportioned for each day not spent in Jersey (excluding holidays and business trips).',
                         type: 'resident-not-ordinarily'
                     };
@@ -432,82 +548,78 @@
                     render();
                     return;
                 }
-
-                if (key === 'placeOfResidence' && value === 'no') {
-                    console.log('Matched: placeOfResidence no');
+                
+                if (key === 'arriveUnder60PlaceAbroad' && value === 'no') {
                     state.result = {
                         status: 'Resident and Ordinarily Resident',
                         description: 'You are resident and ordinarily resident from day one as Jersey is your only home, even though you spend 60 days or fewer in Jersey.',
-                        taxLiability: 'Liable to Jersey income tax on your world-wide income regardless of where it arises. If you pay tax on the same income in another jurisdiction, a credit may be available for foreign taxes paid.',
+                        taxLiability: 'You are liable to Jersey income tax on your worldwide income regardless of where it arises. If you pay tax on the same income in another jurisdiction, a credit may be available for foreign taxes paid.',
                         type: 'resident-ordinarily'
                     };
                     state.step = 'result';
                     render();
                     return;
                 }
-
-                if (key === 'initial' && value === 'over60') {
-                    state.step = 'moving';
+                
+                // Moving to Jersey
+                if (key === 'arriveMoving' && value === 'yes') {
+                    state.step = 'arriveCentreOfLife';
                     render();
                     return;
                 }
-
-                if (key === 'moving' && value === 'yes') {
-                    console.log('Matched: moving yes');
-                    state.step = 'centreOfLife';
-                    console.log('Changed step to:', state.step);
-                    render();
-                    console.log('Render complete');
-                    return;
-                }
-
-                if (key === 'moving' && value === 'no') {
-                    state.step = 'visitor';
+                
+                if (key === 'arriveMoving' && value === 'no') {
+                    state.step = 'arriveVisitorAccommodation';
                     render();
                     return;
                 }
-
-                if (key === 'centreOfLife' && value === 'no') {
+                
+                // Centre of life
+                if (key === 'arriveCentreOfLife' && value === 'no') {
                     state.result = {
-                    status: 'Resident and Ordinarily Resident',
-                    description: 'You are resident and ordinarily resident from day one as you are moving to Jersey in a permanent (though not necessarily indefinite) manner, having ceased residence elsewhere.',
-                    taxLiability: 'Liable to Jersey income tax on your world-wide income regardless of where it arises. If you pay tax on the same income in another jurisdiction, a credit may be available for foreign taxes paid. Tax allowances will be apportioned based on your arrival date if part way through the year.',
-                    type: 'resident-ordinarily'
+                        status: 'Resident and Ordinarily Resident',
+                        description: 'You are resident and ordinarily resident from your date of arrival as you are moving to Jersey in a permanent (though not necessarily indefinite) manner, having ceased residence elsewhere.',
+                        taxLiability: 'You are liable to Jersey income tax on your worldwide income regardless of where it arises. If you pay tax on the same income in another jurisdiction, a credit may be available for foreign taxes paid.',
+                        allowances: 'Tax allowances will be apportioned based on your arrival date if arriving part way through the year. Refer to guidance on split-year treatment and pro-rating of overseas income.',
+                        type: 'resident-ordinarily'
                     };
                     state.step = 'result';
                     render();
                     return;
                 }
-
-                if (key === 'centreOfLife' && value === 'yes') {
-                    state.step = 'durationMaintaining';
+                
+                if (key === 'arriveCentreOfLife' && value === 'yes') {
+                    state.step = 'arriveDuration';
                     render();
                     return;
                 }
-
-                if (key === 'durationMaintaining' && value === 'under4years') {
-                    state.step = 'contract';
-                    render();
-                    return;
-                }
-
-                if (key === 'durationMaintaining' && value === 'over4years') {
+                
+                // Duration
+                if (key === 'arriveDuration' && value === 'over4years') {
                     state.result = {
                         status: 'Resident and Ordinarily Resident',
                         description: 'You are resident and ordinarily resident from day one as you foresee living in Jersey for more than four years.',
-                        taxLiability: 'Liable to Jersey income tax on your world-wide income regardless of where it arises. If you pay tax on the same income in another jurisdiction, a credit may be available for foreign taxes paid. Tax allowances will be apportioned based on your arrival date if part way through the year.',
+                        taxLiability: 'You are liable to Jersey income tax on your worldwide income regardless of where it arises. If you pay tax on the same income in another jurisdiction, a credit may be available for foreign taxes paid.',
+                        allowances: 'Tax allowances will be apportioned based on your arrival date if arriving part way through the year. Refer to guidance on split-year treatment and pro-rating of overseas income.',
                         type: 'resident-ordinarily'
                     };
                     state.step = 'result';
                     render();
                     return;
                 }
-
-                if (key === 'contract' && value === 'fixed') {
+                
+                if (key === 'arriveDuration' && value === 'under4years') {
+                    state.step = 'arriveContract';
+                    render();
+                    return;
+                }
+                
+                // Contract
+                if (key === 'arriveContract' && value === 'fixed') {
                     state.result = {
                         status: 'Resident but Not Ordinarily Resident',
                         description: 'You are resident but not ordinarily resident during the first four years, as you have a fixed-term contract of four years or fewer while maintaining a life elsewhere.',
-                        taxLiability: 'You owe income tax only on Jersey-sourced income and income remitted to Jersey. If your contract extends beyond four years, you become resident and ordinarily resident from the start of year 5 or from the date of the contract change.',
+                        taxLiability: 'You are liable to income tax only on Jersey-source income and overseas income remitted to Jersey. If your contract extends beyond four years, you become resident and ordinarily resident from the start of year 5 or from the date of the contract change.',
                         allowances: 'Allowances are apportioned for each day not spent in Jersey (excluding holidays and business trips).',
                         type: 'resident-not-ordinarily'
                     };
@@ -515,58 +627,173 @@
                     render();
                     return;
                 }
-
-                if (key === 'contract' && value === 'notfixed') {
+                
+                if (key === 'arriveContract' && value === 'notfixed') {
                     state.result = {
                         status: 'Resident and Ordinarily Resident',
-                        description: 'You are resident and ordinarily resident from day one.',
-                        taxLiability: 'Liable to Jersey income tax on your world-wide income regardless of where it arises. If you pay tax on the same income in another jurisdiction, a credit may be available for foreign taxes paid. Tax allowances will be apportioned based on your arrival date if part way through the year.',
+                        description: 'You are resident and ordinarily resident from day one as you do not have a fixed-term contract of four years or fewer.',
+                        taxLiability: 'You are liable to Jersey income tax on your worldwide income regardless of where it arises. If you pay tax on the same income in another jurisdiction, a credit may be available for foreign taxes paid.',
+                        allowances: 'Tax allowances will be apportioned based on your arrival date if arriving part way through the year. Refer to guidance on split-year treatment and pro-rating of overseas income.',
                         type: 'resident-ordinarily'
                     };
                     state.step = 'result';
                     render();
                     return;
                 }
-
-                if (key === 'visitor' && value === 'hotel') {
+                
+                // Visitor accommodation
+                if (key === 'arriveVisitorAccommodation' && value === 'hotel') {
+                    state.step = 'arriveVisitorHotel183';
+                    render();
+                    return;
+                }
+                
+                if (key === 'arriveVisitorAccommodation' && value === 'available') {
+                    state.step = 'arriveVisitorNights';
+                    render();
+                    return;
+                }
+                
+                // Visitor hotels - 183 days
+                if (key === 'arriveVisitorHotel183' && value === 'no') {
+                    state.step = 'arriveVisitorHotelHabitual';
+                    render();
+                    return;
+                }
+                
+                if (key === 'arriveVisitorHotel183' && value === 'yes') {
+                    state.result = {
+                        status: 'Resident but Not Ordinarily Resident',
+                        description: 'You are resident but not ordinarily resident for any year in which you exceed 183 days in Jersey, even when staying in hotels.',
+                        taxLiability: 'You are liable to Jersey income tax on all income arising in Jersey and overseas income remitted to Jersey for years in which you exceed 183 days. If your visits become habitual (averaging 90 or more days per year over four years), you will become resident and ordinarily resident from year 5.',
+                        allowances: 'Allowances are apportioned for each day not spent in Jersey (excluding holidays and business trips).',
+                        type: 'resident-not-ordinarily'
+                    };
+                    state.step = 'result';
+                    render();
+                    return;
+                }
+                
+                // Visitor hotels - Habitual
+                if (key === 'arriveVisitorHotelHabitual' && value === 'no') {
                     state.result = {
                         status: 'Non-Resident',
-                        description: 'If you stay in hotels and do not exceed 60 days, you are generally not considered resident (some exceptions may apply).',
-                        taxLiability: 'Your Jersey-sourced income (other than income accuring from property situated in Jersey) is exempt from income tax.',
+                        description: 'You are not considered resident in Jersey as you do not exceed 183 days in any year and your visits are not habitual.',
+                        taxLiability: 'Your Jersey-source income is exempt from Jersey income tax, unless it accrues from Jersey property. Overseas income is not taxable in Jersey.',
                         type: 'non-resident'
                     };
                     state.step = 'result';
                     render();
                     return;
                 }
-
-                if (key === 'visitor' && value === 'owned') {
-                    state.step = 'nights';
-                    render();
-                    return;
-                }
-
-                if (key === 'nights' && value === 'over90') {
+                
+                if (key === 'arriveVisitorHotelHabitual' && value === 'yes') {
                     state.result = {
-                        status: 'Resident and Ordinarily Resident (from Year 5)',
-                        description: 'You are treated as resident and ordinarily resident from year 5 as you average more than 90 nights per year over a 4-year period in available accommodation.',
-                        taxLiability: 'From year 5 onwards, liable to Jersey income tax on your world-wide income. Before year 5, you are resident but not ordinarily resident, liable on income arising in and remitted to Jersey.',
+                        status: 'Non-Resident (Years 1-4), then Resident and Ordinarily Resident (from Year 5)',
+                        description: 'Your visits are considered habitual as they average 90 or more days per year and form part of your regular pattern of life. You are not resident for years 1-4 but become resident and ordinarily resident from the fifth year.',
+                        taxLiability: 'Years 1-4: Your Jersey-source income is exempt from Jersey income tax (unless from Jersey property). From year 5: You are liable to Jersey income tax on your worldwide income.',
                         type: 'resident-ordinarily'
                     };
                     state.step = 'result';
                     render();
                     return;
                 }
-
-                if (key === 'nights' && value === 'under90') {
+                
+                // Visitor available accommodation - Nights
+                if (key === 'arriveVisitorNights' && value === 'over90') {
+                    state.result = {
+                        status: 'Resident but Not Ordinarily Resident (Years 1-4), then Resident and Ordinarily Resident (from Year 5)',
+                        description: 'You are resident from your first visit as you stay in accommodation available for your use. As you average more than 90 nights per year, your visits are considered habitual and you become ordinarily resident from the fifth year.',
+                        taxLiability: 'Years 1-4: Liable to income tax on all income arising in Jersey and overseas income remitted to Jersey. From year 5: Liable on worldwide income.',
+                        allowances: 'Allowances are apportioned for each day not spent in Jersey (excluding holidays and business trips) during years 1-4.',
+                        type: 'resident-ordinarily'
+                    };
+                    state.step = 'result';
+                    render();
+                    return;
+                }
+                
+                if (key === 'arriveVisitorNights' && value === 'under90') {
                     state.result = {
                         status: 'Resident but Not Ordinarily Resident',
-                        description: 'You are resident but not ordinarily resident as you stay in available accommodation but do not average more than 90 nights per year.',
-                        taxLiability: 'Liable to income tax on all income arising in Jersey and overseas income remitted to Jersey.',
+                        description: 'You are resident but not ordinarily resident as you stay in accommodation available for your use but do not average more than 90 nights per year.',
+                        taxLiability: 'You are liable to income tax on all income arising in Jersey and overseas income remitted to Jersey.',
                         allowances: 'Allowances are apportioned for each day not spent in Jersey (excluding holidays and business trips).',
                         type: 'resident-not-ordinarily'
                     };
                     state.step = 'result';
+                    render();
+                    return;
+                }
+
+                // ==================== DEPARTURES PATHWAY ====================
+                
+                // Permanent vs temporary
+                if (key === 'leavePermanent' && value === 'permanent') {
+                    state.result = {
+                        status: 'Non-Resident',
+                        description: 'You are treated as non-resident from your date of departure as you are leaving Jersey to take up permanent residence abroad.',
+                        taxLiability: 'For the year of departure, your assessment on overseas income will be based on income arising from 1 January to the date of departure. Jersey-source income remains taxable for the full calendar year, except employment income from duties performed abroad after departure. Refer to guidance on split-year treatment and pro-rating of overseas income.',
+                        type: 'non-resident'
+                    };
+                    state.step = 'result';
+                    render();
+                    return;
+                }
+                
+                if (key === 'leavePermanent' && value === 'temporary') {
+                    state.step = 'leaveEntireYear';
+                    render();
+                    return;
+                }
+                
+                // Entire year abroad
+                if (key === 'leaveEntireYear' && value === 'no') {
+                    state.result = {
+                        status: 'Ordinarily Resident',
+                        description: 'You remain ordinarily resident in Jersey as you will not be absent for an entire tax year. Article 126 applies.',
+                        taxLiability: 'You are liable to Jersey income tax on your worldwide income. If you pay tax on the same income in another jurisdiction, relief may be available to limit double taxation.',
+                        type: 'resident-ordinarily'
+                    };
+                    state.step = 'result';
+                    render();
+                    return;
+                }
+                
+                if (key === 'leaveEntireYear' && value === 'yes') {
+                    state.step = 'leaveEmployment';
+                    render();
+                    return;
+                }
+                
+                // Full-time employment abroad
+                if (key === 'leaveEmployment' && value === 'no') {
+                    state.step = 'multifactorial';
+                    render();
+                    return;
+                }
+                
+                if (key === 'leaveEmployment' && value === 'yes') {
+                    state.step = 'leaveAccommodation';
+                    render();
+                    return;
+                }
+                
+                // Relinquish accommodation
+                if (key === 'leaveAccommodation' && value === 'yes') {
+                    state.result = {
+                        status: 'Non-Resident',
+                        description: 'You meet all three conditions to be automatically considered non-resident: absent for an entire tax year, full-time employment abroad, and no available accommodation in Jersey.',
+                        taxLiability: 'Your overseas income is exempt from Jersey income tax. Your Jersey-source income is also exempt, unless it accrues from Jersey property (such as rental income from letting your home).',
+                        type: 'non-resident'
+                    };
+                    state.step = 'result';
+                    render();
+                    return;
+                }
+                
+                if (key === 'leaveAccommodation' && value === 'no') {
+                    state.step = 'multifactorial';
                     render();
                     return;
                 }
@@ -584,6 +811,40 @@
             function render() {
                 var container = document.getElementById('question-container');
                 
+                // Multifactorial assessment page
+                if (state.step === 'multifactorial') {
+                    container.innerHTML = 
+                        '<div class="result-box multifactorial">' +
+                            '<div class="result-content">' +
+                                '<h3>Multifactorial Assessment Required</h3>' +
+                                '<div class="result-status">' +
+                                    '<p>Your residence status requires further analysis</p>' +
+                                '</div>' +
+                                '<p style="margin-bottom: 1rem">You do not meet all three conditions for automatic non-resident status. Revenue Jersey will need to assess your centre of vital interests to determine whether you have genuinely left Jersey to live abroad for a settled purpose.</p>' +
+                                '<div class="result-details">' +
+                                    '<h4>Factors considered include:</h4>' +
+                                    '<ul>' +
+                                        '<li>Whether your immediate family (spouse, children, dependants) continues to reside in Jersey</li>' +
+                                        '<li>Whether you continue to make Jersey Social Security contributions</li>' +
+                                        '<li>Whether you maintain personal effects and assets in Jersey (car, furniture in storage)</li>' +
+                                        '<li>Whether you conduct your financial affairs through Jersey institutions (bank accounts, pension schemes)</li>' +
+                                        '<li>The pattern of your visits to Jersey (frequent/regular vs. occasional holidaymaker)</li>' +
+                                        '<li>Whether you have taken steps to establish yourself in a settled manner abroad (purchasing/renting accommodation, opening local bank accounts, registering for local tax)</li>' +
+                                    '</ul>' +
+                                    '<h4>Possible outcomes:</h4>' +
+                                    '<p><strong>Non-Resident:</strong> If the balance of factors indicates you have made a distinct break from your life in Jersey and established yourself abroad for a settled purpose, you will be treated as non-resident. Your overseas and Jersey-source income will be exempt from Jersey income tax (unless arising from Jersey property).</p>' +
+                                    '<p><strong>Ordinarily Resident:</strong> If the balance of factors indicates your centre of vital interests remains in Jersey and your absence is akin to an extended trip or occasional residence abroad, you will remain ordinarily resident under Article 126. You will be liable to Jersey income tax on your worldwide income, but may claim relief for foreign taxes paid.</p>' +
+                                    '<p style="margin-top: 1rem"><strong>This determination is informed by case law and is ultimately a matter of judgment.</strong> We recommend contacting Revenue Jersey for guidance on your specific circumstances.</p>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>' +
+                        '<button id="reset-btn" class="primary-button">Start New Assessment</button>';
+                    
+                    document.getElementById('reset-btn').addEventListener('click', resetQuestionnaire);
+                    return;
+                }
+                
+                // Result page
                 if (state.step === 'result') {
                     var allowancesHtml = state.result.allowances ? 
                         '<h4>Allowances:</h4><p>' + state.result.allowances + '</p>' : '';
@@ -609,6 +870,7 @@
                     return;
                 }
 
+                // Question page
                 var currentQuestion = questions[state.step];
                 
                 var html = 
@@ -635,16 +897,13 @@
                         e.preventDefault();
                         var step = this.getAttribute('data-step');
                         var value = this.getAttribute('data-value');
-                        console.log('Button clicked:', step, value);
                         handleAnswer(step, value);
                     });
                 }
             }
 
             document.getElementById('year').textContent = new Date().getFullYear();
-            console.log('Script loaded, rendering initial state...');
             render();
-            console.log('Initial render complete');
         })();
     </script>
 </body>
