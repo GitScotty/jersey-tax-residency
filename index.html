@@ -527,7 +527,6 @@
                     state.result = {
                         status: 'Resident and Ordinarily Resident',
                         description: 'You are resident and ordinarily resident as you live in Jersey in a settled manner and do not maintain a home or significant connections elsewhere.',
-                        taxLiability: 'You are liable to Jersey income tax on your worldwide income regardless of where it arises. If you pay tax on the same income in another jurisdiction, a credit may be available for foreign taxes paid.',
                         type: 'resident-ordinarily'
                     };
                     state.step = 'result';
@@ -546,8 +545,6 @@
                     state.result = {
                         status: 'Resident but Not Ordinarily Resident',
                         description: 'You are resident but not ordinarily resident as you have a fixed-term employment contract of 4 years or fewer while maintaining a home and connections outside Jersey.',
-                        taxLiability: 'You are liable to income tax on all income arising in Jersey and overseas income remitted to Jersey. If your contract extends beyond 4 years, you become resident and ordinarily resident from the start of year 5 or from the date of contract change.',
-                        allowances: 'Allowances are apportioned for each day not spent in Jersey (excluding holidays and business trips).',
                         type: 'resident-not-ordinarily'
                     };
                     state.step = 'result';
@@ -559,7 +556,6 @@
                     state.result = {
                         status: 'Resident and Ordinarily Resident',
                         description: 'You are resident and ordinarily resident as you do not have a fixed-term contract of 4 years or fewer while maintaining a home outside Jersey.',
-                        taxLiability: 'You are liable to Jersey income tax on your worldwide income regardless of where it arises. If you pay tax on the same income in another jurisdiction, a credit may be available for foreign taxes paid.',
                         type: 'resident-ordinarily'
                     };
                     state.step = 'result';
@@ -585,8 +581,6 @@
                     state.result = {
                         status: 'Resident but Not Ordinarily Resident',
                         description: 'You are resident but not ordinarily resident for this tax year as you spend more than 6 months in Jersey but have averaged 90 days or fewer over the previous 4 years.',
-                        taxLiability: 'You are liable to income tax on all income arising in Jersey and overseas income remitted to Jersey.',
-                        allowances: 'Allowances are apportioned for each day not spent in Jersey (excluding holidays and business trips).',
                         type: 'resident-not-ordinarily'
                     };
                     state.step = 'result';
@@ -598,7 +592,6 @@
                     state.result = {
                         status: 'Resident and Ordinarily Resident',
                         description: 'You are resident and ordinarily resident as you spend more than 6 months in Jersey and have averaged more than 90 days per annum over the previous 4 years.',
-                        taxLiability: 'You are liable to Jersey income tax on your worldwide income regardless of where it arises. If you pay tax on the same income in another jurisdiction, a credit may be available for foreign taxes paid.',
                         type: 'resident-ordinarily'
                     };
                     state.step = 'result';
@@ -624,7 +617,6 @@
                     state.result = {
                         status: 'Non-Resident',
                         description: 'You are not considered resident as you spend 6 months or fewer in Jersey, stay only in hotels or guest houses, and have averaged 90 days or fewer over the previous 4 years.',
-                        taxLiability: 'Your Jersey-source income is exempt from Jersey income tax, unless it accrues from Jersey property. Overseas income is not taxable in Jersey.',
                         type: 'non-resident'
                     };
                     state.step = 'result';
@@ -636,7 +628,6 @@
                     state.result = {
                         status: 'Resident and Ordinarily Resident',
                         description: 'You are resident and ordinarily resident as your visits to Jersey are habitual, averaging more than 90 days per annum over the previous 4 years.',
-                        taxLiability: 'You are liable to Jersey income tax on your worldwide income regardless of where it arises. If you pay tax on the same income in another jurisdiction, a credit may be available for foreign taxes paid.',
                         type: 'resident-ordinarily'
                     };
                     state.step = 'result';
@@ -649,8 +640,6 @@
                     state.result = {
                         status: 'Resident but Not Ordinarily Resident',
                         description: 'You are resident but not ordinarily resident as you stay in available accommodation but have averaged 90 days or fewer over the previous 4 years.',
-                        taxLiability: 'You are liable to income tax on all income arising in Jersey and overseas income remitted to Jersey.',
-                        allowances: 'Allowances are apportioned for each day not spent in Jersey (excluding holidays and business trips).',
                         type: 'resident-not-ordinarily'
                     };
                     state.step = 'result';
@@ -662,7 +651,6 @@
                     state.result = {
                         status: 'Resident and Ordinarily Resident',
                         description: 'You are resident and ordinarily resident as you stay in available accommodation and have averaged more than 90 days per annum over the previous 4 years.',
-                        taxLiability: 'You are liable to Jersey income tax on your worldwide income regardless of where it arises. If you pay tax on the same income in another jurisdiction, a credit may be available for foreign taxes paid.',
                         type: 'resident-ordinarily'
                     };
                     state.step = 'result';
@@ -690,8 +678,6 @@
                     state.result = {
                         status: 'Non-Resident',
                         description: 'You are non-resident from 1 January following your departure as you have made a clean break with Jersey and established your home and centre of daily life abroad.',
-                        taxLiability: 'Your overseas income is exempt from Jersey income tax. Jersey-source income is also exempt, unless it accrues from Jersey property.',
-                        note: 'For your year of departure (the year in which you left), consult the residence assessment flowchart for arrivals/annual status to determine your position for that specific year.',
                         type: 'non-resident'
                     };
                     state.step = 'result';
@@ -710,7 +696,6 @@
                     state.result = {
                         status: 'Resident and Ordinarily Resident',
                         description: 'You remain ordinarily resident as you will not be absent from Jersey for an entire tax year. Article 126 applies.',
-                        taxLiability: 'You are liable to Jersey income tax on your worldwide income. If you pay tax on the same income in another jurisdiction, relief may be available to limit double taxation.',
                         type: 'resident-ordinarily'
                     };
                     state.step = 'result';
@@ -742,8 +727,6 @@
                     state.result = {
                         status: 'Non-Resident',
                         description: 'You are non-resident from 1 January following your departure as you meet all three conditions for automatic non-residence: absent for an entire tax year, full-time employment abroad, and no available accommodation in Jersey.',
-                        taxLiability: 'Your overseas income is exempt from Jersey income tax. Jersey-source income is also exempt, unless it accrues from Jersey property.',
-                        note: 'For your year of departure (the year in which you left), consult the residence assessment flowchart for arrivals/annual status to determine your position for that specific year.',
                         type: 'non-resident'
                     };
                     state.step = 'result';
@@ -818,12 +801,6 @@
                 
                 // Result page
                 if (state.step === 'result') {
-                    var allowancesHtml = state.result.allowances ? 
-                        '<h4>Allowances:</h4><p>' + state.result.allowances + '</p>' : '';
-                    
-                    var noteHtml = state.result.note ?
-                        '<h4>Note:</h4><p>' + state.result.note + '</p>' : '';
-                    
                     container.innerHTML = 
                         '<div class="result-box ' + state.result.type + '">' +
                             '<div class="result-content">' +
@@ -831,13 +808,7 @@
                                 '<div class="result-status">' +
                                     '<p>' + state.result.status + '</p>' +
                                 '</div>' +
-                                '<p style="margin-bottom: 1rem">' + state.result.description + '</p>' +
-                                '<div class="result-details">' +
-                                    '<h4>Tax Liability:</h4>' +
-                                    '<p>' + state.result.taxLiability + '</p>' +
-                                    allowancesHtml +
-                                    noteHtml +
-                                '</div>' +
+                                '<p style="margin-bottom: 0">' + state.result.description + '</p>' +
                             '</div>' +
                         '</div>' +
                         '<div class="button-row">' +
