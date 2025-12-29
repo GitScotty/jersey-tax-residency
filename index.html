@@ -801,11 +801,27 @@
                 
                 // Result page
                 if (state.step === 'result') {
-                    var nonResidentNote = '';
-                    if (state.result.type === 'non-resident') {
-                        nonResidentNote = 
+                    var infoNote = '';
+                    var isArrivalsBranch = state.answers.initial === 'arrival';
+                    
+                    // Text for annual reassessment
+                    var reassessmentText = 'Residence status must be reassessed annually. If you are non-resident, or resident but not ordinarily resident, your status may change in future years if your presence in Jersey or your personal and economic ties change over time. For example, you may become ordinarily resident in a later tax year if a fixed-term contract becomes open-ended, if your centre of life shifts to Jersey, or if you habitually spend more than 90 days a year in Jersey on average over a four-year period.';
+                    
+                    if (state.result.type === 'non-resident' && isArrivalsBranch) {
+                        infoNote = 
+                            '<div style="background: #dbeafe; border: 1px solid #93c5fd; padding: 1rem; border-radius: 0.25rem; margin-top: 1rem;">' +
+                                '<p style="margin: 0 0 1rem 0; font-size: 0.875rem;"><strong>Note:</strong> Non-residents are liable for tax on income arising in Jersey, with certain exceptions; however, they may benefit from the 60-day short-term business visitors exemption.</p>' +
+                                '<p style="margin: 0; font-size: 0.875rem;">' + reassessmentText + '</p>' +
+                            '</div>';
+                    } else if (state.result.type === 'non-resident') {
+                        infoNote = 
                             '<div style="background: #dbeafe; border: 1px solid #93c5fd; padding: 1rem; border-radius: 0.25rem; margin-top: 1rem;">' +
                                 '<p style="margin: 0; font-size: 0.875rem;"><strong>Note:</strong> Non-residents are liable for tax on income arising in Jersey, with certain exceptions; however, they may benefit from the 60-day short-term business visitors exemption.</p>' +
+                            '</div>';
+                    } else if (state.result.type === 'resident-not-ordinarily' && isArrivalsBranch) {
+                        infoNote = 
+                            '<div style="background: #dbeafe; border: 1px solid #93c5fd; padding: 1rem; border-radius: 0.25rem; margin-top: 1rem;">' +
+                                '<p style="margin: 0; font-size: 0.875rem;">' + reassessmentText + '</p>' +
                             '</div>';
                     }
                     
@@ -817,7 +833,7 @@
                                     '<p>' + state.result.status + '</p>' +
                                 '</div>' +
                                 '<p style="margin-bottom: 0">' + state.result.description + '</p>' +
-                                nonResidentNote +
+                                infoNote +
                             '</div>' +
                         '</div>' +
                         '<div class="button-row">' +
