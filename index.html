@@ -801,6 +801,14 @@
                 
                 // Result page
                 if (state.step === 'result') {
+                    var nonResidentNote = '';
+                    if (state.result.type === 'non-resident') {
+                        nonResidentNote = 
+                            '<div style="background: #dbeafe; border: 1px solid #93c5fd; padding: 1rem; border-radius: 0.25rem; margin-top: 1rem;">' +
+                                '<p style="margin: 0; font-size: 0.875rem;"><strong>Note:</strong> Non-residents are liable for tax on income arising in Jersey, with certain exceptions; however, they may benefit from the 60-day short-term business visitors exemption.</p>' +
+                            '</div>';
+                    }
+                    
                     container.innerHTML = 
                         '<div class="result-box ' + state.result.type + '">' +
                             '<div class="result-content">' +
@@ -809,6 +817,7 @@
                                     '<p>' + state.result.status + '</p>' +
                                 '</div>' +
                                 '<p style="margin-bottom: 0">' + state.result.description + '</p>' +
+                                nonResidentNote +
                             '</div>' +
                         '</div>' +
                         '<div class="button-row">' +
