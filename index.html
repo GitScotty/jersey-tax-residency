@@ -242,6 +242,22 @@
             background: #fef2f2;
         }
         
+        .print-button {
+            background: white;
+            color: #1f2937;
+            padding: 0.75rem 1.5rem;
+            border: 2px solid #374151;
+            border-radius: 0.25rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        
+        .print-button:hover {
+            background: #f3f4f6;
+        }
+        
         .button-row {
             display: flex;
             gap: 1rem;
@@ -351,7 +367,8 @@
                 step: 'initial',
                 answers: {},
                 result: null,
-                history: []
+                history: [],
+                trail: [] // stores { question, answer, stepKey } for each answered question
             };
 
             var questions = {
@@ -492,6 +509,21 @@
             function handleAnswer(key, value) {
                 state.answers[key] = value;
                 state.history.push(state.step);
+                
+                // Record the trail entry: question text and selected answer text
+                var q = questions[key];
+                var selectedOption = null;
+                for (var i = 0; i < q.options.length; i++) {
+                    if (q.options[i].value === value) {
+                        selectedOption = q.options[i];
+                        break;
+                    }
+                }
+                state.trail.push({
+                    stepKey: key,
+                    question: q.title,
+                    answer: selectedOption ? selectedOption.title : value
+                });
 
                 // ==================== INITIAL ROUTING ====================
                 
@@ -509,7 +541,6 @@
 
                 // ==================== ARRIVALS/ANNUAL PATHWAY ====================
                 
-                // Q1: Settled manner?
                 if (key === 'settled' && value === 'yes') {
                     state.step = 'keepHome';
                     render();
@@ -522,7 +553,6 @@
                     return;
                 }
                 
-                // E1: Keep home outside?
                 if (key === 'keepHome' && value === 'no') {
                     state.result = {
                         status: 'Resident and Ordinarily Resident',
@@ -540,7 +570,6 @@
                     return;
                 }
                 
-                // F1: Fixed contract?
                 if (key === 'fixedContract' && value === 'yes') {
                     state.result = {
                         status: 'Resident but Not Ordinarily Resident',
@@ -563,7 +592,6 @@
                     return;
                 }
                 
-                // D0: Six months?
                 if (key === 'sixMonths' && value === 'yes') {
                     state.step = 'avgDaysHeavy';
                     render();
@@ -576,7 +604,6 @@
                     return;
                 }
                 
-                // V3B: Average days (>6 months pathway)
                 if (key === 'avgDaysHeavy' && value === 'under90') {
                     state.result = {
                         status: 'Resident but Not Ordinarily Resident',
@@ -599,7 +626,6 @@
                     return;
                 }
                 
-                // A1: Available accommodation?
                 if (key === 'available' && value === 'no') {
                     state.step = 'avgDaysHotels';
                     render();
@@ -612,7 +638,6 @@
                     return;
                 }
                 
-                // V3A: Hotels only average
                 if (key === 'avgDaysHotels' && value === 'under90') {
                     state.result = {
                         status: 'Non-Resident',
@@ -635,7 +660,6 @@
                     return;
                 }
                 
-                // V3: Available accommodation average
                 if (key === 'avgDaysAccom' && value === 'under90') {
                     state.result = {
                         status: 'Resident but Not Ordinarily Resident',
@@ -660,7 +684,6 @@
 
                 // ==================== DEPARTURES PATHWAY ====================
                 
-                // L1: Permanent vs temporary
                 if (key === 'leavingType' && value === 'permanent') {
                     state.step = 'cleanBreak';
                     render();
@@ -673,7 +696,6 @@
                     return;
                 }
                 
-                // L1P: Clean break?
                 if (key === 'cleanBreak' && value === 'yes') {
                     state.result = {
                         status: 'Non-Resident',
@@ -691,7 +713,6 @@
                     return;
                 }
                 
-                // L2: Entire year abroad?
                 if (key === 'entireYear' && value === 'no') {
                     state.result = {
                         status: 'Resident and Ordinarily Resident',
@@ -709,7 +730,6 @@
                     return;
                 }
                 
-                // L3: Full-time employment abroad?
                 if (key === 'fullTimeEmployment' && value === 'no') {
                     state.step = 'multifactorial';
                     render();
@@ -722,7 +742,6 @@
                     return;
                 }
                 
-                // L4: Relinquish accommodation?
                 if (key === 'relinquishAccom' && value === 'yes') {
                     state.result = {
                         status: 'Non-Resident',
@@ -744,6 +763,7 @@
             function goBack() {
                 if (state.history.length > 0) {
                     state.step = state.history.pop();
+                    state.trail.pop();
                     state.result = null;
                     render();
                 }
@@ -754,10 +774,122 @@
                     step: 'initial',
                     answers: {},
                     result: null,
-                    history: []
+                    history: [],
+                    trail: []
                 };
                 render();
             }
+
+            // ==================== PRINT SUMMARY ====================
+
+            function buildTrailHTML(forPrint) {
+                var now = new Date();
+                var dateStr = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+                var timeStr = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
+                var outcomeStatus = '';
+                var outcomeDescription = '';
+                var outcomeType = '';
+
+                if (state.result) {
+                    outcomeStatus = state.result.status;
+                    outcomeDescription = state.result.description;
+                    outcomeType = state.result.type;
+                } else if (state.step === 'multifactorial') {
+                    outcomeStatus = 'Multifactorial Assessment Required';
+                    outcomeDescription = 'Your residence status requires further analysis. Revenue Jersey will assess your centre of vital interests to determine whether you have established your centre of life abroad for a settled purpose.';
+                    outcomeType = 'multifactorial';
+                }
+
+                var outcomeBg = '#f3f4f6';
+                var outcomeBorder = '#d1d5db';
+                if (outcomeType === 'non-resident') { outcomeBg = '#e0e0e0'; outcomeBorder = '#555'; }
+                else if (outcomeType === 'resident-not-ordinarily') { outcomeBg = '#ffe7a3'; outcomeBorder = '#b8860b'; }
+                else if (outcomeType === 'resident-ordinarily') { outcomeBg = '#d3f5d3'; outcomeBorder = '#3c8c3c'; }
+                else if (outcomeType === 'multifactorial') { outcomeBg = '#e0e7ff'; outcomeBorder = '#a5b4fc'; }
+
+                var html = '';
+
+                // Steps
+                for (var i = 0; i < state.trail.length; i++) {
+                    var entry = state.trail[i];
+                    var stepNum = i + 1;
+                    html +=
+                        '<div style="display: flex; margin-bottom: 0.25rem;">' +
+                            '<div style="flex-shrink: 0; width: 2rem; display: flex; flex-direction: column; align-items: center;">' +
+                                '<div style="width: 1.5rem; height: 1.5rem; border-radius: 50%; background: #C8102E; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold;">' + stepNum + '</div>' +
+                                (i < state.trail.length - 1 ? '<div style="width: 2px; flex: 1; background: #d1d5db; margin-top: 0.25rem;"></div>' : '') +
+                            '</div>' +
+                            '<div style="margin-left: 0.75rem; padding-bottom: 1.25rem; flex: 1;">' +
+                                '<p style="font-size: 0.8125rem; color: #6b7280; margin-bottom: 0.125rem;">Question ' + stepNum + '</p>' +
+                                '<p style="font-weight: 600; margin-bottom: 0.25rem;">' + entry.question + '</p>' +
+                                '<p style="color: #1f2937; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 0.25rem; padding: 0.375rem 0.625rem; display: inline-block; font-size: 0.9375rem;">→ ' + entry.answer + '</p>' +
+                            '</div>' +
+                        '</div>';
+                }
+
+                // Outcome
+                html +=
+                    '<div style="display: flex;">' +
+                        '<div style="flex-shrink: 0; width: 2rem; display: flex; flex-direction: column; align-items: center;">' +
+                            '<div style="width: 1.5rem; height: 1.5rem; border-radius: 50%; background: #374151; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: bold;">✓</div>' +
+                        '</div>' +
+                        '<div style="margin-left: 0.75rem; flex: 1;">' +
+                            '<p style="font-size: 0.8125rem; color: #6b7280; margin-bottom: 0.125rem;">Determination</p>' +
+                            '<div style="background: ' + outcomeBg + '; border: 2px solid ' + outcomeBorder + '; border-radius: 0.25rem; padding: 1rem;">' +
+                                '<p style="font-weight: bold; font-size: 1.125rem; margin-bottom: 0.375rem;">' + outcomeStatus + '</p>' +
+                                '<p style="font-size: 0.9375rem; color: #374151;">' + outcomeDescription + '</p>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>';
+
+                return { stepsHTML: html, dateStr: dateStr, timeStr: timeStr, outcomeStatus: outcomeStatus };
+            }
+
+            function printSummary() {
+                var data = buildTrailHTML(true);
+
+                var printWindow = window.open('', '_blank');
+                printWindow.document.write(
+                    '<!DOCTYPE html>' +
+                    '<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">' +
+                    '<title>Tax Residence Assessment — Decision Summary</title>' +
+                    '<style>' +
+                        '* { margin: 0; padding: 0; box-sizing: border-box; }' +
+                        'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; color: #333; padding: 2rem; max-width: 50rem; margin: 0 auto; }' +
+                        '.print-header { border-bottom: 3px solid #C8102E; padding-bottom: 1rem; margin-bottom: 1.5rem; }' +
+                        '.print-header h1 { font-size: 1.25rem; color: #C8102E; margin-bottom: 0.25rem; }' +
+                        '.print-header h2 { font-size: 1rem; font-weight: normal; color: #374151; }' +
+                        '.print-meta { font-size: 0.8125rem; color: #6b7280; margin-bottom: 1.5rem; }' +
+                        '.print-footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #d1d5db; font-size: 0.75rem; color: #9ca3af; }' +
+                        '@media print {' +
+                            'body { padding: 0; }' +
+                            '.no-print { display: none !important; }' +
+                        '}' +
+                    '</style>' +
+                    '</head><body>' +
+                        '<div class="no-print" style="margin-bottom: 1.5rem; text-align: right;">' +
+                            '<button onclick="window.print()" style="background: #C8102E; color: white; border: none; padding: 0.5rem 1.5rem; border-radius: 0.25rem; font-size: 0.9375rem; font-weight: 600; cursor: pointer;">Print / Save as PDF</button>' +
+                        '</div>' +
+                        '<div class="print-header">' +
+                            '<h1>Government of Jersey — Revenue Jersey</h1>' +
+                            '<h2>Tax Residence Assessment — Decision Summary</h2>' +
+                        '</div>' +
+                        '<div class="print-meta">' +
+                            'Generated: ' + data.dateStr + ' at ' + data.timeStr +
+                            ' &nbsp;|&nbsp; Outcome: <strong>' + data.outcomeStatus + '</strong>' +
+                        '</div>' +
+                        data.stepsHTML +
+                        '<div class="print-footer">' +
+                            '<p>This summary is generated by the Jersey Tax Residence Assessment Tool and is provided for guidance only. ' +
+                            'It does not constitute a formal determination of residence status. For specific advice, contact Revenue Jersey or a tax professional.</p>' +
+                        '</div>' +
+                    '</body></html>'
+                );
+                printWindow.document.close();
+            }
+
+            // ==================== RENDER ====================
 
             function render() {
                 var container = document.getElementById('question-container');
@@ -791,10 +923,12 @@
                         '</div>' +
                         '<div class="button-row">' +
                             '<button id="back-btn" class="secondary-button">← Back</button>' +
+                            '<button id="print-btn" class="print-button">🖨 Print Decision Summary</button>' +
                             '<button id="reset-btn" class="primary-button">Start New Assessment</button>' +
                         '</div>';
                     
                     document.getElementById('back-btn').addEventListener('click', goBack);
+                    document.getElementById('print-btn').addEventListener('click', printSummary);
                     document.getElementById('reset-btn').addEventListener('click', resetQuestionnaire);
                     return;
                 }
@@ -804,7 +938,6 @@
                     var infoNote = '';
                     var isArrivalsBranch = state.answers.initial === 'arrival';
                     
-                    // Text for annual reassessment
                     var reassessmentText = 'Residence status must be reassessed annually. If you are non-resident, or resident but not ordinarily resident, your status may change in future years if your presence in Jersey or your personal and economic ties change over time. For example, you may become ordinarily resident in a later tax year if a fixed-term contract becomes open-ended, if your centre of life shifts to Jersey, or if you habitually spend more than 90 days a year in Jersey on average over a four-year period.';
                     
                     if (state.result.type === 'non-resident' && isArrivalsBranch) {
@@ -838,10 +971,12 @@
                         '</div>' +
                         '<div class="button-row">' +
                             '<button id="back-btn" class="secondary-button">← Back</button>' +
+                            '<button id="print-btn" class="print-button">🖨 Print Decision Summary</button>' +
                             '<button id="reset-btn" class="primary-button">Start New Assessment</button>' +
                         '</div>';
                     
                     document.getElementById('back-btn').addEventListener('click', goBack);
+                    document.getElementById('print-btn').addEventListener('click', printSummary);
                     document.getElementById('reset-btn').addEventListener('click', resetQuestionnaire);
                     return;
                 }
@@ -866,14 +1001,12 @@
 
                 html += '</div>';
                 
-                // Add back button if not on initial question
                 if (state.step !== 'initial') {
                     html += '<button id="back-btn" class="secondary-button" style="margin-top: 1.5rem;">← Back</button>';
                 }
                 
                 container.innerHTML = html;
 
-                // Add back button listener if present
                 var backBtn = document.getElementById('back-btn');
                 if (backBtn) {
                     backBtn.addEventListener('click', goBack);
