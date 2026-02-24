@@ -20,7 +20,7 @@
         }
         
         .header {
-            background: #C8102E;
+            background: #1e40af;
             color: white;
             padding: 1rem 0;
         }
@@ -34,24 +34,6 @@
         .header h1 {
             font-size: 1.5rem;
             font-weight: bold;
-        }
-        
-        .breadcrumb {
-            background: #f3f4f6;
-            border-bottom: 1px solid #d1d5db;
-            padding: 0.75rem 0;
-        }
-        
-        .breadcrumb-content {
-            max-width: 64rem;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-            font-size: 0.875rem;
-        }
-        
-        .breadcrumb a {
-            color: #C8102E;
-            text-decoration: none;
         }
         
         .container {
@@ -117,8 +99,8 @@
         }
         
         .option-button:hover {
-            border-color: #C8102E;
-            background: #fef2f2;
+            border-color: #1e40af;
+            background: #eff6ff;
         }
         
         .option-button-title {
@@ -211,7 +193,7 @@
         
         .primary-button {
             width: 100%;
-            background: #C8102E;
+            background: #1e40af;
             color: white;
             padding: 0.75rem 1.5rem;
             border: none;
@@ -223,14 +205,14 @@
         }
         
         .primary-button:hover {
-            background: #a00d24;
+            background: #1e3a8a;
         }
         
         .secondary-button {
             background: white;
-            color: #C8102E;
+            color: #1e40af;
             padding: 0.75rem 1.5rem;
-            border: 2px solid #C8102E;
+            border: 2px solid #1e40af;
             border-radius: 0.25rem;
             font-weight: 600;
             cursor: pointer;
@@ -239,7 +221,7 @@
         }
         
         .secondary-button:hover {
-            background: #fef2f2;
+            background: #eff6ff;
         }
         
         .print-button {
@@ -296,41 +278,21 @@
         }
         
         .bullet {
-            color: #C8102E;
+            color: #1e40af;
             font-weight: bold;
             margin-right: 0.5rem;
         }
         
         .info-box a {
-            color: #C8102E;
+            color: #1e40af;
             text-decoration: underline;
-        }
-        
-        .footer {
-            background: #1f2937;
-            color: white;
-            padding: 2rem 0;
-            margin-top: 3rem;
-        }
-        
-        .footer-content {
-            max-width: 64rem;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-            text-align: center;
         }
     </style>
 </head>
 <body>
     <div class="header">
         <div class="header-content">
-            <h1>Government of Jersey</h1>
-        </div>
-    </div>
-
-    <div class="breadcrumb">
-        <div class="breadcrumb-content">
-            <a href="#">Home</a> &gt; <a href="#">Taxes and your money</a> &gt; Tax residence assessment
+            <h1>Jersey Tax Residence Assessment Tool</h1>
         </div>
     </div>
 
@@ -347,17 +309,11 @@
         <div class="info-box">
             <h3>Important Information</h3>
             <ul>
-                <li><span class="bullet">•</span> This tool reflects Revenue Jersey's interpretation of the law at the present date and provides guidance only. For specific advice, contact Revenue Jersey or a tax professional.</li>
-                <li><span class="bullet">•</span> The decision tree does not apply to individuals granted entitled status under Regulation 2(1)(e) of the Control of Housing and Work (residential and Employment Status) (Jersey) Regulations 2013. If you are subject to such arrangements, you should seek advice from Revenue Jersey or a professional adviser.</li>
+                <li><span class="bullet">•</span> This tool reflects an interpretation of the law at the present date and provides guidance only. For specific advice, contact Revenue Jersey or a tax professional.</li>
+                <li><span class="bullet">•</span> The decision tree does not apply to individuals granted entitled status under Regulation 2(1)(e) of the Control of Housing and Work (Residential and Employment Status) (Jersey) Regulations 2013. If you are subject to such arrangements, you should seek advice from Revenue Jersey or a professional adviser.</li>
                 <li><span class="bullet">•</span> Double tax agreements with other jurisdictions may affect your tax position.</li>
                 <li><span class="bullet">•</span> Visit <a href="https://www.gov.je/TaxesMoney/IncomeTax/Individuals/IncomeTaxCircumstances/pages/residencyforjerseytax.aspx">gov.je</a> for complete residence information.</li>
             </ul>
-        </div>
-    </div>
-
-    <div class="footer">
-        <div class="footer-content">
-            <p>&copy; <span id="year"></span> Government of Jersey. All rights reserved.</p>
         </div>
     </div>
 
@@ -368,7 +324,7 @@
                 answers: {},
                 result: null,
                 history: [],
-                trail: [] // stores { question, answer, stepKey } for each answered question
+                trail: []
             };
 
             var questions = {
@@ -510,7 +466,6 @@
                 state.answers[key] = value;
                 state.history.push(state.step);
                 
-                // Record the trail entry: question text and selected answer text
                 var q = questions[key];
                 var selectedOption = null;
                 for (var i = 0; i < q.options.length; i++) {
@@ -817,7 +772,7 @@
                     html +=
                         '<div style="display: flex; margin-bottom: 0.25rem;">' +
                             '<div style="flex-shrink: 0; width: 2rem; display: flex; flex-direction: column; align-items: center;">' +
-                                '<div style="width: 1.5rem; height: 1.5rem; border-radius: 50%; background: #C8102E; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold;">' + stepNum + '</div>' +
+                                '<div style="width: 1.5rem; height: 1.5rem; border-radius: 50%; background: #1e40af; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold;">' + stepNum + '</div>' +
                                 (i < state.trail.length - 1 ? '<div style="width: 2px; flex: 1; background: #d1d5db; margin-top: 0.25rem;"></div>' : '') +
                             '</div>' +
                             '<div style="margin-left: 0.75rem; padding-bottom: 1.25rem; flex: 1;">' +
@@ -857,8 +812,8 @@
                     '<style>' +
                         '* { margin: 0; padding: 0; box-sizing: border-box; }' +
                         'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; color: #333; padding: 2rem; max-width: 50rem; margin: 0 auto; }' +
-                        '.print-header { border-bottom: 3px solid #C8102E; padding-bottom: 1rem; margin-bottom: 1.5rem; }' +
-                        '.print-header h1 { font-size: 1.25rem; color: #C8102E; margin-bottom: 0.25rem; }' +
+                        '.print-header { border-bottom: 3px solid #1e40af; padding-bottom: 1rem; margin-bottom: 1.5rem; }' +
+                        '.print-header h1 { font-size: 1.25rem; color: #1e40af; margin-bottom: 0.25rem; }' +
                         '.print-header h2 { font-size: 1rem; font-weight: normal; color: #374151; }' +
                         '.print-meta { font-size: 0.8125rem; color: #6b7280; margin-bottom: 1.5rem; }' +
                         '.print-footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #d1d5db; font-size: 0.75rem; color: #9ca3af; }' +
@@ -869,11 +824,11 @@
                     '</style>' +
                     '</head><body>' +
                         '<div class="no-print" style="margin-bottom: 1.5rem; text-align: right;">' +
-                            '<button onclick="window.print()" style="background: #C8102E; color: white; border: none; padding: 0.5rem 1.5rem; border-radius: 0.25rem; font-size: 0.9375rem; font-weight: 600; cursor: pointer;">Print / Save as PDF</button>' +
+                            '<button onclick="window.print()" style="background: #1e40af; color: white; border: none; padding: 0.5rem 1.5rem; border-radius: 0.25rem; font-size: 0.9375rem; font-weight: 600; cursor: pointer;">Print / Save as PDF</button>' +
                         '</div>' +
                         '<div class="print-header">' +
-                            '<h1>Government of Jersey — Revenue Jersey</h1>' +
-                            '<h2>Tax Residence Assessment — Decision Summary</h2>' +
+                            '<h1>Jersey Tax Residence Assessment Tool</h1>' +
+                            '<h2>Decision Summary</h2>' +
                         '</div>' +
                         '<div class="print-meta">' +
                             'Generated: ' + data.dateStr + ' at ' + data.timeStr +
@@ -881,7 +836,7 @@
                         '</div>' +
                         data.stepsHTML +
                         '<div class="print-footer">' +
-                            '<p>This summary is generated by the Jersey Tax Residence Assessment Tool and reflects the law at the date generated. It is provided for guidance only. ' +
+                            '<p>This summary is generated by the Jersey Tax Residence Assessment Tool and reflects an interpretation of the law at the date generated. It is provided for guidance only. ' +
                             'It does not constitute a formal determination of residence status. For specific advice, contact Revenue Jersey or a tax professional.</p>' +
                         '</div>' +
                     '</body></html>'
@@ -1023,7 +978,6 @@
                 }
             }
 
-            document.getElementById('year').textContent = new Date().getFullYear();
             render();
         })();
     </script>
